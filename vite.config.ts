@@ -1,7 +1,7 @@
 // import { fileURLToPath, URL } from 'node:url'
 
 import { defineConfig, loadEnv, ConfigEnv, UserConfig  } from 'vite'
-import createVitePlugins from './vite/plugins'
+import createVitePlugins from './vite/plugins/index.js'
 import path from "path"
 
 const CWD = process.cwd();
@@ -18,9 +18,22 @@ export default defineConfig(({mode, command}: ConfigEnv): UserConfig  => {
     VITE_HOST,
     VITE_APP_BASE_API
   } = env;
+  console.log( path.resolve(__dirname, './src'))
   return {
     base: VITE_BASE_URL,
     plugins: createVitePlugins(env, command === 'build'),
+    resolve: {
+      // https://cn.vitejs.dev/config/#resolve-alias
+      alias: {
+        // '@': fileURLToPath(new URL('./src', import.meta.url)),
+        // 设置路径
+        '~': path.resolve(__dirname, './'),
+        // 设置别名
+        '@': path.resolve(__dirname, './src')
+      },
+      // https://cn.vitejs.dev/config/#resolve-extensions
+      extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue']
+    },
     build: {
       // 大文件报警阈值设置,不建议使用
       chunkSizeWarningLimit: 1000,
@@ -53,18 +66,6 @@ export default defineConfig(({mode, command}: ConfigEnv): UserConfig  => {
           },
         },
       },
-    },
-    resolve: {
-      // https://cn.vitejs.dev/config/#resolve-alias
-      alias: {
-        // '@': fileURLToPath(new URL('./src', import.meta.url)),
-        // 设置路径
-        '~': path.resolve(__dirname, './'),
-        // 设置别名
-        '@': path.resolve(__dirname, './src')
-      },
-      // https://cn.vitejs.dev/config/#resolve-extensions
-      extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue']
     },
     // vite 相关配置
     server: {
