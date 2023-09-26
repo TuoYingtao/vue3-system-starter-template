@@ -1,4 +1,4 @@
-// import { fileURLToPath, URL } from 'node:url'
+import { fileURLToPath, URL } from 'node:url'
 
 import { defineConfig, loadEnv, ConfigEnv, UserConfig  } from 'vite'
 import createVitePlugins from './vite/plugins/index.js'
@@ -18,16 +18,14 @@ export default defineConfig(({mode, command}: ConfigEnv): UserConfig  => {
     VITE_HOST,
     VITE_APP_BASE_API
   } = env;
-  console.log( path.resolve(__dirname, './src'))
   return {
     base: VITE_BASE_URL,
     plugins: createVitePlugins(env, command === 'build'),
     resolve: {
       // https://cn.vitejs.dev/config/#resolve-alias
       alias: {
-        // '@': fileURLToPath(new URL('./src', import.meta.url)),
         // 设置路径
-        '~': path.resolve(__dirname, './'),
+        '~': fileURLToPath(new URL('./', import.meta.url)),
         // 设置别名
         '@': path.resolve(__dirname, './src')
       },
@@ -74,7 +72,7 @@ export default defineConfig(({mode, command}: ConfigEnv): UserConfig  => {
       },
       port: Number(VITE_PORT),
       host: VITE_HOST,
-      open: true,
+      open: false,
       strictPort: true,
       proxy: {
         // https://cn.vitejs.dev/config/#server-proxy
@@ -89,7 +87,7 @@ export default defineConfig(({mode, command}: ConfigEnv): UserConfig  => {
       port: 10000,
       host: '0.0.0.0',
       strictPort: true,
-      open: true,
+      open: false,
     },
     //fix:error:stdin>:7356:1: warning: "@charset" must be the first rule in the file
     css: {
