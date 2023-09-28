@@ -105,6 +105,6 @@ export default defineConfig(({mode, command}: ConfigEnv): UserConfig  => {
           }
         ]
       }
-    }
+    },
   }
 })

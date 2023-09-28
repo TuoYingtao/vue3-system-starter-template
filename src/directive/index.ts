@@ -1,8 +1,9 @@
 import {App} from 'vue';
-import HasPermission from '@/directive/HasPermission';
-import Debounce from '@/directive/Debounce';
-import Throttle from '@/directive/Throttle';
-import Hide from '@/directive/Hide';
+import HasPermission from '@/directive/permission/HasPermission';
+import Debounce from '@/directive/common/Debounce';
+import Throttle from '@/directive/common/Throttle';
+import Hide from '@/directive/common/Hide';
+import copyText from "@/directive/common/copyText";
 
 export default {
   /**
@@ -24,5 +25,6 @@ export default {
     Debounce.install(app);
     Throttle(app);
     Hide.install(app);
+    copyText.install(app);
   },
 };

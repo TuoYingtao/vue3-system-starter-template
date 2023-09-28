@@ -7,28 +7,34 @@ export default {
     app.directive('copyText', {
       mounted(el: any, binding: DirectiveBinding){
         const eventType = Object.keys(binding.modifiers)[0] || 'click';
-      },
-      beforeMount(el, { value, arg }) {
-        if (arg === "callback") {
-          el.$copyCallback = value;
+        if (binding.arg === "callback") {
+          el.$copyCallback = binding.value;
         } else {
-          el.$copyValue = value;
+          el.$copyValue = binding.value;
           const handler = () => {
             copyTextToClipboard(el.$copyValue);
             if (el.$copyCallback) {
               el.$copyCallback(el.$copyValue);
             }
           };
-          el.addEventListener("click", handler);
-          el.$destroyCopy = () => el.removeEventListener("click", handler);
+          el.addEventListener(eventType, handler);
         }
+      },
+      beforeMount(el, binding: DirectiveBinding) {
+        const eventType = Object.keys(binding.modifiers)[0] || 'click';
+        const handler = () => {
+          copyTextToClipboard(el.$copyValue);
+          if (el.$copyCallback) {
+            el.$copyCallback(el.$copyValue);
+          }
+        };
+        el.$destroyCopy = () => el.removeEventListener(eventType, handler);
       }
     })
   },
-
 }
 
-function copyTextToClipboard(input, { target = document.body } = {}) {
+function copyTextToClipboard(input: any, { target = document.body } = {}) {
   const element = document.createElement('textarea');
   const previouslyFocusedElement = document.activeElement;
 
@@ -41,9 +47,6 @@ function copyTextToClipboard(input, { target = document.body } = {}) {
   element.style.position = 'absolute';
   element.style.left = '-9999px';
   element.style.fontSize = '12pt'; // Prevent zooming on iOS
-
-  const selection = document.getSelection();
-  const originalRange = selection.rangeCount > 0 && selection.getRangeAt(0);
 
   target.append(element);
   element.select();
@@ -59,13 +62,18 @@ function copyTextToClipboard(input, { target = document.body } = {}) {
 
   element.remove();
 
-  if (originalRange) {
-    selection.removeAllRanges();
-    selection.addRange(originalRange);
+  const selection = document.getSelection();
+  if (selection) {
+    const originalRange = selection.rangeCount > 0 && selection.getRangeAt(0);
+    if (originalRange) {
+      selection.removeAllRanges();
+      selection.addRange(originalRange);
+    }
   }
 
   // Get the focus back on the previously focused element, if any
   if (previouslyFocusedElement) {
+    // @ts-ignore
     previouslyFocusedElement.focus();
   }
 
