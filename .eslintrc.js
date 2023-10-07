@@ -1,17 +1,38 @@
 // ESlint 检查配置
 module.exports = {
   root: true,
-  parserOptions: {
-    parser: 'babel-eslint',
-    sourceType: 'module'
-  },
   env: {
     browser: true,
     node: true,
     es6: true,
   },
-  extends: ['plugin:vue/recommended', 'eslint:recommended'],
-
+  globals: {
+    $: "readonly",
+    $$: "readonly",
+    $ref: "readonly",
+    $computed: "readonly",
+    $shallowRef: "readonly",
+    $customRef: "readonly",
+    $toRef: "readonly",
+  },
+  extends: [
+    'eslint:recommended',
+    // 'plugin:vue/recommended',
+    'plugin:vue/strongly-recommended',
+    '@vue/typescript/recommended',
+    "@vue/eslint-config-typescript",
+    "@vue/eslint-config-prettier",
+    "./.eslintrc-auto-import.json",
+  ],
+  parserOptions: {
+    ecmaVersion: "latest",
+    parser: 'babel-eslint',
+    sourceType: 'module',
+    ecmaFeatures: {
+      jsx: true,
+    },
+  },
+  plugins: ["vue", "@typescript-eslint"],
   // add your custom rules here
   //it is base on https://github.com/vuejs/eslint-config-vue
   rules: {

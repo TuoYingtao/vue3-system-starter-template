@@ -26,7 +26,7 @@
 <script setup lang="ts">
 import {ref, onMounted} from 'vue';
 import icons from './requireIcons';
-// import SvgIcon from '@/components/SvgIcon/index.vue';
+// import SvgIcon from '@/components/SvgIcon/index-1.vue';
 
 const emit = defineEmits(['selected']);
 const name = ref<string>('');

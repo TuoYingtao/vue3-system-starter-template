@@ -9,7 +9,6 @@ export default function createAutoComponents() {
     resolvers: [
       ElementPlusResolver(),                                        // 自动导入 Element Plus 组件
       (componentName) => {                     // 自定义解析 导入 Vant 的示例
-        console.log('createAutoComponents', componentName)
         if (componentName.startsWith('Van'))                        // 其中 `componentName` 始终为大写
           return {name: componentName.slice(3), from: 'vant'}
       },

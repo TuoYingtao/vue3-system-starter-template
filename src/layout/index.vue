@@ -36,7 +36,7 @@ const classObj = computed(() => ({
   withoutAnimation: sidebar.value.withoutAnimation,
   mobile: device.value === 'mobile'
 }))
-
+// 响应式窗口大小
 const { width, height } = useWindowSize();
 const WIDTH = 992; // refer to Bootstrap's responsive design
 

@@ -33,7 +33,7 @@ export default function createAutoImport() {
     ],
     injectAtEnd: true,                                          // 在其他导入的末尾注入导入
     eslintrc: {                                                 // eslint报错解决
-      enabled: false,                                           // Default `false`
+      enabled: true,                                           // Default `false`
       filepath: './.eslintrc-auto-import.json',                 // Default `./.eslintrc-auto-import.json`
       globalsPropValue: true,                                   // Default `true`, (true | false | 'readonly' | 'readable' | 'writable' | 'writeable')
     },

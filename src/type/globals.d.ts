@@ -23,3 +23,13 @@ declare module '*.js' {
   const VITE_PLUGINS: createVitePlugins
   export default VITE_PLUGINS;
 }
+
+declare module "*.scss" {
+  const classes: { readonly [key: string]: string };
+  export default classes;
+}
+
+declare module "*.less" {
+  const classes: { readonly [key: string]: string };
+  export default classes;
+}

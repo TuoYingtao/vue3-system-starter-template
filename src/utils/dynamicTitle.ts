@@ -1,4 +1,3 @@
-import store from '@/store'
 import defaultSettings from '@/settings'
 import useSettingsStore from '@/stores/modules/settings'
 
