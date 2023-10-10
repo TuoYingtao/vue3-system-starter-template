@@ -1,9 +1,10 @@
 import auth from "@/plugins/auth";
 import router, { constantRoutes, dynamicRoutes } from '@/router'
 import { getRouters } from '@/api/menu'
-import Layout from '@/layout/index'
-import ParentView from '@/components/ParentView'
-import InnerLink from '@/layout/components/InnerLink'
+import Layout from '@/layout/index.vue'
+import ParentView from '@/components/ParentView/index.vue'
+import InnerLink from '@/layout/components/InnerLink/index.vue'
+import { RouteRecordRaw } from "vue-router";
 
 // 匹配views里面所有的.vue文件
 const modules = import.meta.glob('./../../views/**/*.vue')
@@ -15,22 +16,22 @@ const usePermissionStore = defineStore('permission', {
     defaultRoutes: [],
     topbarRouters: [],
     sidebarRouters: []
-  }),
+  } as Permission),
   actions: {
-    setRoutes(routes) {
+    setRoutes(routes: LayoutRoutes[]) {
       this.addRoutes = routes
       this.routes = constantRoutes.concat(routes)
     },
-    setDefaultRoutes(routes) {
+    setDefaultRoutes(routes: LayoutRoutes[]) {
       this.defaultRoutes = constantRoutes.concat(routes)
     },
-    setTopbarRoutes(routes) {
+    setTopbarRoutes(routes: LayoutRoutes[]) {
       this.topbarRouters = routes
     },
-    setSidebarRouters(routes) {
+    setSidebarRouters(routes: LayoutRoutes[]) {
       this.sidebarRouters = routes
     },
-    generateRoutes(roles) {
+    generateRoutes(roles?: string): Promise<LayoutRoutes[]> {
       return new Promise(resolve => {
         // 向后端请求路由数据
         getRouters().then(res => {
@@ -42,7 +43,7 @@ const usePermissionStore = defineStore('permission', {
           const defaultRoutes = filterAsyncRouter(defaultData)
           const asyncRoutes = filterDynamicRoutes(dynamicRoutes)
           asyncRoutes.forEach(route => {
-            router.addRoute(route)
+            router.addRoute(route as RouteRecordRaw)
           })
           this.setRoutes(rewriteRoutes)
           this.setSidebarRouters(constantRoutes.concat(sidebarRoutes))
@@ -56,7 +57,7 @@ const usePermissionStore = defineStore('permission', {
 })
 
 // 遍历后台传来的路由字符串，转换为组件对象
-function filterAsyncRouter(asyncRouterMap, lastRouter = false, type = false) {
+function filterAsyncRouter(asyncRouterMap: LayoutRoutes[], lastRouter: LayoutRoutes | boolean = false, type = false) {
   return asyncRouterMap.filter(route => {
     if (type && route.children) {
       route.children = filterChildren(route.children)
@@ -74,7 +75,7 @@ function filterAsyncRouter(asyncRouterMap, lastRouter = false, type = false) {
       }
     }
     if (route.children != null && route.children && route.children.length) {
-      route.children = filterAsyncRouter(route.children, route, type)
+      route.children = filterAsyncRouter(route.children, lastRouter, type)
     } else {
       delete route['children']
       delete route['redirect']
@@ -83,8 +84,8 @@ function filterAsyncRouter(asyncRouterMap, lastRouter = false, type = false) {
   })
 }
 
-function filterChildren(childrenMap, lastRouter = false) {
-  var children = []
+function filterChildren(childrenMap: LayoutRoutes[], lastRouter: LayoutRoutes | boolean = false) {
+  var children: LayoutRoutes[] = []
   childrenMap.forEach((el, index) => {
     if (el.children && el.children.length) {
       if (el.component === 'ParentView' && !lastRouter) {
@@ -100,7 +101,7 @@ function filterChildren(childrenMap, lastRouter = false) {
       }
     }
     if (lastRouter) {
-      el.path = lastRouter.path + '/' + el.path
+      el.path = (lastRouter as LayoutRoutes).path + '/' + el.path
     }
     children = children.concat(el)
   })
@@ -108,8 +109,8 @@ function filterChildren(childrenMap, lastRouter = false) {
 }
 
 // 动态路由遍历，验证是否具备权限
-export function filterDynamicRoutes(routes) {
-  const res = []
+export function filterDynamicRoutes(routes: LayoutRoutes[]) {
+  const res: LayoutRoutes[] = []
   routes.forEach(route => {
     if (route.permissions) {
       if (auth.hasPermiOr(route.permissions)) {
@@ -124,7 +125,7 @@ export function filterDynamicRoutes(routes) {
   return res
 }
 
-export const loadView = (view) => {
+export const loadView = (view: string) => {
   let res;
   for (const path in modules) {
     const dir = path.split('views/')[1].split('.vue')[0];

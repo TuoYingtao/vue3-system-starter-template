@@ -40,7 +40,7 @@ app.use(router);
 app.use(stores);
 app.use(directive);
 app.use(plugins);
-// 注册element-plus 并且设置全局的大小
+// 全局注册element-plus 并且设置全局的大小
 app.use(ElementPlus, {
   locale: locale,
   size: "default"

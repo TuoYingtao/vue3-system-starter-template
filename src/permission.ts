@@ -8,6 +8,7 @@ import { isRelogin } from '@/utils/request'
 import useUserStore from '@/stores/modules/user'
 import useSettingsStore from '@/stores/modules/settings'
 import usePermissionStore from '@/stores/modules/permission'
+import { RouteRecordRaw } from "vue-router";
 
 NProgress.configure({ showSpinner: false });
 
@@ -16,7 +17,7 @@ const whiteList = ['/login', '/register'];
 router.beforeEach((to, from, next) => {
   NProgress.start()
   if (getToken()) {
-    to.meta.title && useSettingsStore().setTitle(to.meta.title)
+    to.meta.title && useSettingsStore().setTitle(to.meta.title as string)
     /* has token*/
     if (to.path === '/login') {
       next({ path: '/' })
@@ -31,7 +32,7 @@ router.beforeEach((to, from, next) => {
             // 根据roles权限生成可访问的路由表
             accessRoutes.forEach(route => {
               if (!isHttp(route.path)) {
-                router.addRoute(route) // 动态添加可访问路由表
+                router.addRoute(route as RouteRecordRaw) // 动态添加可访问路由表
               }
             })
             next({ ...to, replace: true }) // hack方法 确保addRoutes已完成

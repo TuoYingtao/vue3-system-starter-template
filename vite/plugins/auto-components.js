@@ -8,7 +8,7 @@ export default function createAutoComponents() {
   return Components({
     resolvers: [
       ElementPlusResolver(),                                        // 自动导入 Element Plus 组件
-      (componentName) => {                     // 自定义解析 导入 Vant 的示例
+      (componentName) => {                            // 自定义解析 导入 Vant 的示例
         if (componentName.startsWith('Van'))                        // 其中 `componentName` 始终为大写
           return {name: componentName.slice(3), from: 'vant'}
       },
@@ -21,7 +21,7 @@ export default function createAutoComponents() {
     dirs: [                                                         // 自动导入目录下的模块导出, 默认只扫描目录下一层模块
       "src/components"
     ],
-    extensions: ['vue'],                                            // 组件的有效文件扩展名。
+    extensions: ['vue', 'tsx', 'jsx'],                              // 组件的有效文件扩展名。
     // globs: ['src/components/**.{vue}'],                              // 用于匹配要检测为组件的文件名的全局模式。指定后，“dirs”和“extensions”选项将被忽略。
     deep: true,                                                     // 搜索子目录
     directoryAsNamespace: false,                                    // 允许子目录作为组件的命名空间前缀
@@ -31,7 +31,10 @@ export default function createAutoComponents() {
     importPathTransform: v => v,                                    // 解析前变换路径
     allowOverrides: false,                                          // 允许组件覆盖同名的其他组件
     // 用于转换目标的过滤器
-    include: [/\.vue$/, /\.vue\?vue/],
+    include: [
+      /\.vue$/, /\.vue\?vue/,
+      /\.[tj]sx?$/,                                             // .ts, .tsx, .js, .jsx
+    ],
     exclude: [/[\\/]node_modules[\\/]/, /[\\/]\.git[\\/]/, /[\\/]\.nuxt[\\/]/],
     // version: 2.7,                                                   // 项目的Vue版本。如果未指定，它将自动检测。可接受的值：2 | 2.7 | 3
   })

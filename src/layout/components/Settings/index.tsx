@@ -9,12 +9,13 @@ import useAppStore from '@/stores/modules/app'
 import useSettingsStore from '@/stores/modules/settings'
 import usePermissionStore from '@/stores/modules/permission'
 import { handleThemeStyle } from '@/utils/theme'
-// import { ElButton, ElColorPicker, ElDivider, ElDrawer, ElSwitch } from "element-plus";
+import { ElButton, ElColorPicker, ElDivider, ElDrawer, ElSwitch } from "element-plus";
 
 export default defineComponent({
   name: 'Settings',
-  setup(props, { expose }) {
-    const { proxy } = getCurrentInstance();
+  setup(props, {expose}) {
+    // @ts-ignore
+    const {proxy} = getCurrentInstance();
     const appStore = useAppStore()
     const settingsStore = useSettingsStore()
     const permissionStore = usePermissionStore()
@@ -28,7 +29,7 @@ export default defineComponent({
     const topNav = computed({
       get: () => storeSettings.value.topNav,
       set: (val) => {
-        settingsStore.changeSetting({ key: 'topNav', value: val })
+        settingsStore.changeSetting({key: 'topNav', value: val})
         if (!val) {
           appStore.toggleSideBarHide(false);
           permissionStore.setSidebarRouters(permissionStore.defaultRoutes);
@@ -39,42 +40,46 @@ export default defineComponent({
     const tagsView = computed({
       get: () => storeSettings.value.tagsView,
       set: (val) => {
-        settingsStore.changeSetting({ key: 'tagsView', value: val })
+        settingsStore.changeSetting({key: 'tagsView', value: val})
       }
     })
     /**是否需要固定头部 */
     const fixedHeader = computed({
       get: () => storeSettings.value.fixedHeader,
       set: (val) => {
-        settingsStore.changeSetting({ key: 'fixedHeader', value: val })
+        settingsStore.changeSetting({key: 'fixedHeader', value: val})
       }
     })
     /**是否需要侧边栏的logo */
     const sidebarLogo = computed({
       get: () => storeSettings.value.sidebarLogo,
       set: (val) => {
-        settingsStore.changeSetting({ key: 'sidebarLogo', value: val })
+        settingsStore.changeSetting({key: 'sidebarLogo', value: val})
       }
     })
     /**是否需要侧边栏的动态网页的title */
     const dynamicTitle = computed({
       get: () => storeSettings.value.dynamicTitle,
       set: (val) => {
-        settingsStore.changeSetting({ key: 'dynamicTitle', value: val })
+        settingsStore.changeSetting({key: 'dynamicTitle', value: val})
         // 动态设置网页标题
         useDynamicTitle()
       }
     })
 
-    function themeChange(val: string) {
-      settingsStore.changeSetting({ key: 'theme', value: val })
-      theme.value = val;
-      handleThemeStyle(val);
+    function themeChange(val: string | null) {
+      if (val != null) {
+        settingsStore.changeSetting({key: 'theme', value: val})
+        theme.value = val;
+        handleThemeStyle(val);
+      }
     }
+
     function handleTheme(val: string) {
-      settingsStore.changeSetting({ key: 'sideTheme', value: val })
+      settingsStore.changeSetting({key: 'sideTheme', value: val})
       sideTheme.value = val;
     }
+
     function saveSetting() {
       proxy.$modal.loading("正在保存到本地，请稍候...");
       let layoutSetting = {
@@ -89,11 +94,13 @@ export default defineComponent({
       localStorage.setItem("layout-setting", JSON.stringify(layoutSetting));
       setTimeout(proxy.$modal.closeLoading(), 1000)
     }
+
     function resetSetting() {
       proxy.$modal.loading("正在清除设置缓存并刷新，请稍候...");
       localStorage.removeItem("layout-setting")
       setTimeout("window.location.reload()", 1000)
     }
+
     function openSetting() {
       showSettings.value = true;
     }
@@ -103,26 +110,22 @@ export default defineComponent({
     });
 
     /** 选色器 */
-    const renderColorPicker = () => <ElColorPicker v-model={theme.value} predefine={predefineColors.value} onChange={themeChange}/>;
+    const renderColorPicker = () => <ElColorPicker v-model={theme.value} predefine={predefineColors.value}
+                                                   onChange={(e: string | null) => themeChange(e)}/>;
 
     /** 分割线 */
-    const renderDivider = () => <ElDivider />;
+    const renderDivider = () => <ElDivider/>;
 
     /** 开关 */
-    const renderSwitch = (val: Ref<boolean | string>) => <ElSwitch v-model={[val.value, 'model-value']} />;
+    const renderSwitch = (val: Ref<boolean | string>) => <ElSwitch v-model={[val.value, 'model-value']}/>;
 
     /** 按钮 */
-    const renderButton = (btnName: string, onCallback: Function, plain: boolean, icon: string, type: string = 'primary') => <ElButton type={type} plain={plain} icon={icon} onClick={onCallback}>{btnName}</ElButton>
+    const renderButton = (btnName: string, onCallback: Function, plain: boolean, icon?: string, type: any = "primary") => <ElButton type={type} plain={plain} icon={icon} onClick={() => onCallback()}>{btnName}</ElButton>
 
     /** 根节点 */
-    const renderRootNode = () => {
-      const withHeader = false;
-      return (
-          <ElDrawer v-model={showSettings.value} v-model:withHeader={withHeader} direction="rtl" size="300px">
-            { renderChildNode() }
-          </ElDrawer>
-      )
-    }
+    const renderRootNode = () => <ElDrawer v-model={showSettings.value} withHeader={false} direction="rtl" size="300px" v-slots={{
+      default: renderChildNode
+    }}/>
 
     /** 子节点 */
     const renderChildNode = () => (<>
@@ -205,7 +208,7 @@ export default defineComponent({
       {renderButton('重置配置', resetSetting, true, 'Refresh', '')}
     </>);
 
-    return { renderRootNode }
+    return {renderRootNode}
   },
   render() {
     return this.renderRootNode();
