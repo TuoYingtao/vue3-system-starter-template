@@ -95,6 +95,8 @@ declare global {
     meta?: LayoutRouteMeta,
     /** 嵌套路由 */
     children?: LayoutRoutes[],
+    /** 不显示子集路由 */
+    noShowingChildren?: boolean,
   }
 
   /** 元数据信息 */

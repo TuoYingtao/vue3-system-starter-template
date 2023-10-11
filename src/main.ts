@@ -41,10 +41,10 @@ app.use(stores);
 app.use(directive);
 app.use(plugins);
 // 全局注册element-plus 并且设置全局的大小
-app.use(ElementPlus, {
+ElementPlus.install(app, {
   locale: locale,
   size: "default"
-});
+})
 app.use(elementIcons)
 
 app.mount('#app');

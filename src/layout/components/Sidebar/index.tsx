@@ -2,7 +2,7 @@ import { defineComponent } from 'vue';
 import { ElScrollbar, ElMenu } from 'element-plus'
 
 import Logo from './Logo.vue'
-import SidebarItem from './SidebarItem.vue'
+import SidebarItem from './SidebarItem'
 import variables from '@/assets/styles/variables.module.scss'
 
 import useAppStore from '@/stores/modules/app'
@@ -14,7 +14,7 @@ export default defineComponent({
   components: {
     SidebarItem
   },
-  setup(props, {expose}) {
+  setup(props) {
     const route = useRoute();
     const appStore = useAppStore()
     const settingsStore = useSettingsStore()
