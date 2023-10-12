@@ -1,26 +1,28 @@
+import { RouteLocationNormalizedLoaded } from "vue-router";
+
 const useTagsViewStore = defineStore('tags-view', {
   state: () => ({
-    visitedViews: [] as Record<string, any>[],
-    cachedViews: [] as Record<string, any>[],
-    iframeViews: [] as Record<string, any>[]
-  }),
+    visitedViews: [],
+    cachedViews: [],
+    iframeViews: []
+  } as TagsView),
   actions: {
-    addView(view: Record<string, any>) {
+    addView(view: RouteLocationNormalizedLoaded) {
       this.addVisitedView(view)
       this.addCachedView(view)
     },
-    addIframeView(view: Record<string, any>) {
+    addIframeView(view: RouteLocationNormalizedLoaded) {
       if (this.iframeViews.some((v: Record<string, any>) => v.path === view.path)) return
       this.iframeViews.push(Object.assign({}, view, {title: view.meta.title || 'no-name'}))
     },
-    addVisitedView(view: Record<string, any>) {
-      if (this.visitedViews.some((v: Record<string, any>)  => v.path === view.path)) return
+    addVisitedView(view: RouteLocationNormalizedLoaded) {
+      if (this.visitedViews.some((v: RouteLocationNormalizedLoaded)  => v.path === view.path)) return
       this.visitedViews.push(Object.assign({}, view, {title: view.meta.title || 'no-name'}))
     },
-    addCachedView(view: Record<string, any>) {
-      if (this.cachedViews.includes(view.name)) return
+    addCachedView(view: RouteLocationNormalizedLoaded) {
+      if (this.cachedViews.includes(view.name as string)) return
       if (!view.meta.noCache) {
-        this.cachedViews.push(view.name)
+        this.cachedViews.push(view.name as string)
       }
     },
     delView(view: Record<string, any>) {
@@ -130,7 +132,7 @@ const useTagsViewStore = defineStore('tags-view', {
           if (idx <= index || (item.meta && item.meta.affix)) {
             return true
           }
-          const i = this.cachedViews.indexOf(item.name)
+          const i = this.cachedViews.indexOf(item.name as string)
           if (i > -1) {
             this.cachedViews.splice(i, 1)
           }
@@ -153,7 +155,7 @@ const useTagsViewStore = defineStore('tags-view', {
           if (idx >= index || (item.meta && item.meta.affix)) {
             return true
           }
-          const i = this.cachedViews.indexOf(item.name)
+          const i = this.cachedViews.indexOf(item.name as string)
           if (i > -1) {
             this.cachedViews.splice(i, 1)
           }

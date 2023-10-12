@@ -1,5 +1,6 @@
 import type { RouteMeta, RouteRecordRaw } from "vue-router";
 import type { DefineComponent } from "vue";
+import { RouteLocationNormalizedLoaded } from "vue-router";
 
 declare global {
   /** 侧边栏配置 */
@@ -115,6 +116,30 @@ declare global {
     affix?: boolean,
     /** 外链接 */
     link?: string,
+  }
+
+  /** 标签 */
+  type TagsView = {
+    /** 历史访问标签 */
+    visitedViews: RouteLocationNormalizedLoaded[],
+    /** 允许缓存页标签 */
+    cachedViews: string[],
+    /** 外联页标签 */
+    iframeViews: RouteLocationNormalizedLoaded[],
+  }
+
+  /** 用户信息 */
+  type User = {
+    /** 令牌凭证 */
+    token: string,
+    /** 用户名 */
+    name: string,
+    /** 头像 */
+    avatar: string,
+    /** 角色 */
+    roles: string[],
+    /** 权限 */
+    permissions: string[],
   }
 
 }

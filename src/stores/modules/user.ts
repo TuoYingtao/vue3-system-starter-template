@@ -9,7 +9,7 @@ const useUserStore = defineStore('user', {
     avatar: '',
     roles: [] as string[],
     permissions: []
-  }),
+  } as User),
   actions: {
     // 登录
     login(userInfo: Record<string, any>) {
