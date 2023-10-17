@@ -142,4 +142,30 @@ declare global {
     permissions: string[],
   }
 
+  /** 字典数据 */
+  type Dict = {
+    /** 字典数据 */
+    dict: DictMap[]
+  }
+
+  /** 字典数据映射 */
+  type DictMap = {
+    /** 字典数据 Key */
+    key: string,
+    /** 字典数据信息集合 */
+    value: DictInfo[]
+  }
+
+  /** 字典数据信息 */
+  type DictInfo = {
+    /** 标题 */
+    label: string,
+    /** 值 */
+    value: string,
+    /** tag标签主题类型 */
+    elTagType: string,
+    /** tag标签Class名 */
+    elTagClass: string,
+  }
+
 }

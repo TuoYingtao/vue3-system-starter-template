@@ -172,7 +172,7 @@
 </template>
 
 <script setup name="Dict">
-import useDictStore from '@/stores/modules/dict'
+import useDictStore from "@/stores/modules/dict";
 import { listType, getType, delType, addType, updateType, refreshCache } from "@/api/system/dict/type";
 
 const { proxy } = getCurrentInstance();

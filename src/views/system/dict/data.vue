@@ -176,7 +176,7 @@
 </template>
 
 <script setup name="Data">
-import useDictStore from '@/store/modules/dict'
+import useDictStore from '@/stores/modules/dict'
 import { optionselect as getDictOptionselect, getType } from "@/api/system/dict/type";
 import { listData, getData, delData, addData, updateData } from "@/api/system/dict/data";
 
@@ -197,8 +197,8 @@ const typeOptions = ref([]);
 const route = useRoute();
 // 数据标签回显样式
 const listClassOptions = ref([
-  { value: "default", label: "默认" }, 
-  { value: "primary", label: "主要" }, 
+  { value: "default", label: "默认" },
+  { value: "primary", label: "主要" },
   { value: "success", label: "成功" },
   { value: "info", label: "信息" },
   { value: "warning", label: "警告" },

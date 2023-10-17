@@ -6,9 +6,9 @@ import useUserStore from '@/stores/modules/user'
 import useSettingsStore from '@/stores/modules/settings'
 
 import './index.scss';
-import Breadcrumb from '@/components/Breadcrumb/index.vue'
+import Breadcrumb from '@/components/framework/layout/Breadcrumb/index'
 import TopNav from '@/components/TopNav/index.vue'
-import Hamburger from '@/components/Hamburger/index.vue'
+import Hamburger from '@/components/framework/layout/Hamburger/index.vue'
 import Screenfull from '@/components/Screenfull/index.vue'
 import SizeSelect from '@/components/SizeSelect/index.vue'
 import HeaderSearch from '@/components/HeaderSearch/index.vue'
@@ -100,7 +100,8 @@ export default defineComponent({
   render() {
     return (<div class="navbar">
       <Hamburger id="hamburger-container" class="hamburger-container" isActive={this.appStore.sidebar.opened} onToggleClick={this.toggleSideBar} />
-      {!this.settingsStore.topNav && <Breadcrumb id="breadcrumb-container" class="breadcrumb-container"/>}
+      {// @ts-ignore
+        !this.settingsStore.topNav && <Breadcrumb id="breadcrumb-container" class="breadcrumb-container"/>}
       {this.settingsStore.topNav && <TopNav id="topmenu-container" class="topmenu-container"/>}
       <div class="right-menu">
         {this.appStore.device !== 'mobile' && (<>

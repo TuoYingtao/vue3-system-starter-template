@@ -1,7 +1,7 @@
 const useDictStore = defineStore('dict', {
   state: () => ({
     dict: new Array()
-  }),
+  } as Dict),
   actions: {
     // 获取字典
     getDict(_key: string) {
@@ -19,12 +19,12 @@ const useDictStore = defineStore('dict', {
       }
     },
     // 设置字典
-    setDict(_key: string, value: any) {
+    setDict(_key: string, value: DictInfo[]) {
       if (_key !== null && _key !== "") {
         this.dict.push({
           key: _key,
           value: value
-        });
+        } as DictMap);
       }
     },
     // 删除字典

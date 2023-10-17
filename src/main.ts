@@ -3,7 +3,6 @@ import 'element-plus/dist/index.css'
 import '@/assets/styles/index.scss'
 
 import { createApp } from 'vue';
-import Cookies from 'js-cookie';
 
 import App from './App.vue';
 import router from './router';
@@ -43,7 +42,7 @@ app.use(plugins);
 // 全局注册element-plus 并且设置全局的大小
 ElementPlus.install(app, {
   locale: locale,
-  size: "default"
+  size: "small"
 })
 app.use(elementIcons)
 
