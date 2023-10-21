@@ -7,13 +7,12 @@ import useSettingsStore from '@/stores/modules/settings'
 
 import './index.scss';
 import Breadcrumb from '@/components/framework/layout/Breadcrumb/index'
-import TopNav from '@/components/TopNav/index.vue'
+import TopNav from '@/components/framework/layout/TopNav/index.vue'
 import Hamburger from '@/components/framework/layout/Hamburger/index.vue'
-import Screenfull from '@/components/Screenfull/index.vue'
-import SizeSelect from '@/components/SizeSelect/index.vue'
-import HeaderSearch from '@/components/HeaderSearch/index.vue'
-import RuoYiGit from '@/components/RuoYi/Git/index.vue'
-import RuoYiDoc from '@/components/RuoYi/Doc/index.vue'
+import Screenfull from '@/components/framework/layout/Screenfull/index.vue'
+import SizeSelect from '@/components/framework/layout/SizeSelect/index.vue'
+import HeaderSearch from '@/components/framework/layout/HeaderSearch/index'
+import SvgIcon from "@/components/framework/SvgIcon/index.vue";
 
 export default defineComponent({
   name: 'Navbar',
@@ -57,6 +56,11 @@ export default defineComponent({
 
     emit('setLayout')
 
+    const renderGit = () => {
+      const url = "https://gitee.com/y_project/RuoYi-Vue"
+      return <div class="right-menu-item hover-effect"><SvgIcon iconClass="github" onClick={() => window.open(url)} /></div>
+    }
+
     const renderIcon = () => <ElIcon><caret-bottom /></ElIcon>
 
     const renderTooltip = (content: string, slots: JSX.Element) => <ElTooltip content={content} effect="dark" placement="bottom" v-slots={{
@@ -92,6 +96,7 @@ export default defineComponent({
     return {
       settingsStore,
       appStore,
+      renderGit,
       toggleSideBar,
       renderTooltip,
       renderDropdown,
@@ -105,9 +110,9 @@ export default defineComponent({
       {this.settingsStore.topNav && <TopNav id="topmenu-container" class="topmenu-container"/>}
       <div class="right-menu">
         {this.appStore.device !== 'mobile' && (<>
-          <HeaderSearch id="header-search" class="right-menu-item" />
-          { this.renderTooltip('源码地址', (<RuoYiGit id="ruoyi-git" class="right-menu-item hover-effect" />)) }
-          { this.renderTooltip('文档地址', (<RuoYiDoc id="ruoyi-doc" class="right-menu-item hover-effect" />)) }
+          {// @ts-ignore
+            <HeaderSearch id="header-search" class="right-menu-item" />}
+          { this.renderTooltip('源码地址', this.renderGit()) }
           <Screenfull id="screenfull" class="right-menu-item hover-effect" />
           { this.renderTooltip('布局大小', (<SizeSelect id="size-select" class="right-menu-item hover-effect" />)) }
         </>)}

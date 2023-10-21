@@ -280,6 +280,7 @@
 <script setup name="Menu">
 import { addMenu, delMenu, getMenu, listMenu, updateMenu } from "@/api/system/menu";
 import { ClickOutside as vClickOutside } from 'element-plus'
+import IconSelect from "@/components/framework/IconSelect";
 
 const { proxy } = getCurrentInstance();
 const { sys_show_hide, sys_normal_disable } = proxy.useDict("sys_show_hide", "sys_normal_disable");
@@ -354,9 +355,11 @@ function showSelectIcon() {
   showChooseIcon.value = true;
 }
 /** 选择图标 */
-function selected(name) {
-  form.value.icon = name;
-  showChooseIcon.value = false;
+function selected(iconItem) {
+  if (iconItem && iconItem != undefined) {
+    form.value.icon = iconItem.stem;
+    showChooseIcon.value = false;
+  }
 }
 /** 图标外层点击隐藏下拉列表 */
 function hideSelectIcon(event) {

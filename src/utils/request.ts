@@ -3,7 +3,7 @@ import { ElNotification , ElMessageBox, ElMessage, ElLoading } from 'element-plu
 import { getToken } from '@/utils/auth'
 import errorCode from '@/utils/errorCode'
 import { tansParams, blobValidate } from '@/utils/ruoyi'
-import cache from '@/plugins/cache'
+import cache from '@/utils/request/Cache'
 import { saveAs } from 'file-saver'
 import useUserStore from '@/stores/modules/user'
 

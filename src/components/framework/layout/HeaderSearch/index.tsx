@@ -7,15 +7,20 @@ import usePermissionStore from '@/stores/modules/permission';
 
 import './index.scss';
 
+interface HeaderSearch {
+  title: string[];
+  path: string;
+}
+
 export default defineComponent({
   name: 'HeaderSearch',
   setup(props) {
-    const search = ref('');
-    const options = ref([]);
-    const searchPool = ref([]);
-    const show = ref(false);
-    const fuse = ref(undefined);
     const headerSearchSelectRef = ref(null);
+    const search = ref('');
+    const options = ref<Fuse.FuseResult<HeaderSearch>[]>([]);
+    const searchPool = ref<HeaderSearch[]>([]);
+    const show = ref(false);
+    const fuse = ref<Fuse<HeaderSearch> | undefined>(undefined);
     const router = useRouter();
     const routes = computed(() => usePermissionStore().routes);
 
@@ -42,16 +47,18 @@ export default defineComponent({
     function click() {
       show.value = !show.value
       if (show.value) {
+        // @ts-ignore
         headerSearchSelectRef.value && headerSearchSelectRef.value.focus()
       }
     };
     function close() {
+      // @ts-ignore
       headerSearchSelectRef.value && headerSearchSelectRef.value.blur()
       options.value = []
       show.value = false
     }
     function change(val?: Record<string, any>) {
-      const path = val.path;
+      const path = val != undefined ? val.path : '';
       if (isHttp(path)) {
         // http(s):// 路径新窗口打开
         const pindex = path.indexOf("http");
@@ -59,14 +66,13 @@ export default defineComponent({
       } else {
         router.push(path)
       }
-
       search.value = ''
       options.value = []
       nextTick(() => {
         show.value = false
       })
     }
-    function initFuse(list) {
+    function initFuse(list: HeaderSearch[]) {
       fuse.value = new Fuse(list, {
         shouldSort: true,
         threshold: 0.4,
@@ -82,31 +88,28 @@ export default defineComponent({
         }]
       })
     }
-    // Filter out the routes that can be displayed in the sidebar
-    // And generate the internationalized title
-    function generateRoutes(routes, basePath = '', prefixTitle = []) {
-      let res = []
-
+    // 过滤掉侧边栏可以显示的路由
+    // 并生成国际化标题
+    function generateRoutes(routes: LayoutRoutes[], basePath = '', prefixTitle: string[] = []) {
+      let res: HeaderSearch[] = []
       for (const r of routes) {
-        // skip hidden router
+        // 跳过隐藏路由器
         if (r.hidden) { continue }
         const p = r.path.length > 0 && r.path[0] === '/' ? r.path : '/' + r.path;
-        const data = {
+        const data: HeaderSearch = {
           path: !isHttp(r.path) ? getNormalPath(basePath + p) : r.path,
           title: [...prefixTitle]
         }
-
         if (r.meta && r.meta.title) {
           data.title = [...data.title, r.meta.title]
 
           if (r.redirect !== 'noRedirect') {
-            // only push the routes with title
-            // special case: need to exclude parent router without redirect
+            // 只推送有标题的路由
+            // 特殊情况：需要排除父路由器而不重定向
             res.push(data)
           }
         }
-
-        // recursive child routes
+        // 递归子路由
         if (r.children) {
           const tempRoutes = generateRoutes(r.children, data.path, data.title)
           if (tempRoutes.length >= 1) {
@@ -117,7 +120,7 @@ export default defineComponent({
       return res
     }
     function querySearch(query?: string) {
-      if (query !== '') {
+      if (query !== '' && query != undefined && fuse.value != undefined) {
         options.value = fuse.value.search(query)
       } else {
         options.value = []
@@ -149,9 +152,11 @@ export default defineComponent({
       {renderSelect()}
     </div>
 
-    return {};
+    return {
+      renderHeaderSearch
+    };
   },
   render() {
-
+    return this.renderHeaderSearch();
   },
 })
