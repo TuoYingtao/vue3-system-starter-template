@@ -1,3 +1,10 @@
+/**
+ * 会话级缓存
+ *
+ * @Author: TuoYingtao
+ * @Date: 2023-10-23 10:16:51
+ * @Version: v1.0.0
+*/
 const sessionCache = {
   set (key: string, value: any) {
     if (!sessionStorage) {
@@ -32,6 +39,13 @@ const sessionCache = {
   }
 }
 
+/**
+ * 本地缓存
+ *
+ * @Author: TuoYingtao
+ * @Date: 2023-10-23 10:17:05
+ * @Version: v1.0.0
+*/
 const localCache = {
   set (key: string, value: any) {
     if (!localStorage) {

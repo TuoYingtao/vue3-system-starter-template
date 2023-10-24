@@ -2,6 +2,8 @@ export const AxiosFieldToken = 'Authorization';
 
 export const CookieCacheFieldToken = 'Admin-Token';
 
+export const AuthScheme = 'Bearer'
+
 export const CacheConstants = {
   SESSION_OBJ: 'sessionObj',
 }
@@ -24,4 +26,5 @@ export enum ContentTypeEnum {
   JSON = 'application/json;charset=utf-8',
   ZIP = 'application/zip',
   MULTIPART = 'multipart/form-data;charset=utf-8',
+  OCTET_STREAM = 'application/octet-stream;charset=UTF-8',
 }

@@ -1,6 +1,6 @@
 import tab from './tab'
 import auth from './auth'
-import cache from '../utils/request/Cache'
+import cache from '../utils/request/utils/Cache'
 import modal from './modal'
 import download from './download'
 

@@ -1,28 +1,30 @@
 import { AxiosError, AxiosResponse } from "axios";
 import isString from "lodash/isString";
-import {
-  AxiosTransform,
-  AxiosOptionsConfig,
-  RequestOptions,
-  RequestConfigWithOptional,
-  AxiosResponseResult,
-  BaseResponseResult
-} from "@/type/axios";
+import { AxiosTransform, IAxiosRequestConfig, AxiosOptionsConfig, RequestConfigWithOptional, AxiosResponseResult, BaseResponseResult } from "@/type/axios";
 import type { AxiosResponseError } from "@/type/axios";
 import router from "@/router";
 import { AxiosCanceler } from "@/utils/request/AxiosCancel";
 import { HttpMethodsEnum, CacheConstants } from "@/utils/request/AxiosConstants";
 import { formatRequestDate, joinTimestamp, setObjToUrlParams } from "@/utils/request/utils";
-import { request } from "@/utils/request/index";
-import { CookiesUtils } from "@/utils/request/Cookies";
-import Cache from '@/utils/request/Cache';
+import request from "@/utils/request/index";
+import { CookiesUtils } from "@/utils/request/utils/Cookies";
+import Cache from '@/utils/request/utils/Cache';
 import { ElMessage } from "element-plus";
+import { Log } from "@/utils/request/utils/descriptor";
 
 const axiosCanceler = new AxiosCanceler();
 
-/** Axios 中央控制器 */
-export class AxiosTransformAbstract implements AxiosTransform {
-  beforeRequestHook(config: RequestConfigWithOptional, options: RequestOptions): RequestConfigWithOptional {
+/**
+ * Axios 中央控制器
+ *
+ * @Author: TuoYingtao
+ * @Date: 2023-10-23 10:17:39
+ * @Version: v1.0.0
+*/
+export class AxiosTransformImpl implements AxiosTransform {
+
+  @Log
+  beforeRequestHook(config: RequestConfigWithOptional, options: AxiosOptionsConfig): RequestConfigWithOptional {
     const { apiUrl, isJoinPrefix, urlPrefix, joinParamsToUrl, formatDate, joinTime = true } = options;
     // 添加接口前缀
     if (isJoinPrefix) {
@@ -70,7 +72,8 @@ export class AxiosTransformAbstract implements AxiosTransform {
     return config;
   }
 
-  requestInterceptors(config: RequestConfigWithOptional, options: AxiosOptionsConfig): RequestConfigWithOptional {
+  @Log
+  requestInterceptors(config: RequestConfigWithOptional, options: IAxiosRequestConfig): RequestConfigWithOptional {
     // jwt token
     const token = CookiesUtils.get();
     if (token && config?.requestOptions?.withToken !== false) {
@@ -102,7 +105,6 @@ export class AxiosTransformAbstract implements AxiosTransform {
       if (sessionObj === undefined || sessionObj === null || sessionObj === '') {
         Cache.session.setJSON(CacheConstants.SESSION_OBJ, requestObj);
       } else {
-        debugger
         // 间隔时间(ms)，小于此时间视为重复提交
         let interval = 10000;
         if (requestObj.url === sessionObj.url
@@ -120,10 +122,12 @@ export class AxiosTransformAbstract implements AxiosTransform {
     return config;
   }
 
-  responseInterceptors(res: AxiosResponse): Promise<AxiosResponse> {
-    const { data } = res;
-    if (!data) return Promise.reject(new Error('请求接口错误'));
-    const { code, msg } = data;
+  @Log
+  responseInterceptors(res: AxiosResponse, options: AxiosOptionsConfig): Promise<AxiosResponse> {
+    if (!res.data) return Promise.reject(new Error('请求接口错误'));
+    const { isTransformResponse } = options;
+    if (isTransformResponse) return Promise.resolve(res);
+    const { code, msg } = res.data;
     if (code === 401) {
       const cookieToken = CookiesUtils.getCooliesUtilsInstance();
       cookieToken.remove();
@@ -137,27 +141,30 @@ export class AxiosTransformAbstract implements AxiosTransform {
     return Promise.resolve(res);
   }
 
-  transformResponseHook(res: AxiosResponseResult, options: RequestOptions): BaseResponseResult {
-    const { isTransformResponse, isTransformCodeResponse, isReturnNativeResponse } = options;
-    //  这里 code为 后台统一的字段，需要在 axios.d.ts 内修改为项目自己的接口返回格式
-    const { code, msg, result } = res.data;
+  @Log
+  transformResponseHook(res: AxiosResponseResult, options: AxiosOptionsConfig): BaseResponseResult {
+    if (!res.data) throw new Error('请求接口错误');
+    const { isTransformResponse, isReturnNativeResponse } = options;
+    // 是否返回原生响应头 比如：需要获取响应头时使用该属性
+    if (isReturnNativeResponse) return res;
     // 如果204无内容直接返回
     const method = res.config.method?.toUpperCase();
     if (res.status === 204 || method === HttpMethodsEnum.PATCH) return res.data;
-    // 是否返回原生响应头 比如：需要获取响应头时使用该属性
-    if (isReturnNativeResponse) return res;
-    // 不进行任何处理，直接返回 用于页面代码可能需要直接获取code，data，message这些信息时开启
-    if (!isTransformResponse) return res.data;
+    if (res.data && res.request.responseType === 'blob') return res.data;
+    //  这里 code为 后台统一的字段，需要在 axios.d.ts 内修改为项目自己的接口返回格式
+    const { code, msg } = res.data;
+    // 不进行任何处理，直接返回 Response 数据 code，data，message 信息
+    if (isTransformResponse) return res.data;
     // 这里逻辑可以根据项目进行修改
     const hasSuccess = res.data && code === 200;
     if (hasSuccess) {
-      // 不进行任何处理，直接返回 用于页面代码可能需要直接获取code，data，message这些信息时开启
-      if (!isTransformCodeResponse) return res.data;
+      console.log('AAAAAAAAAA')
       return res.data;
     }
     throw new Error(`${msg}`);
   }
 
+  @Log
   async responseInterceptorsCatch(error: AxiosError): Promise<AxiosResponseError> {
     if (error.message == "Network Error") {
       error.message = "后端接口连接异常";
@@ -176,11 +183,12 @@ export class AxiosTransformAbstract implements AxiosTransform {
         resolve(config);
       }, config.requestOptions?.retry?.delay || 1500);
     });
-    let backoffConfig = await backoff;
-    return await request.request(backoffConfig as RequestConfigWithOptional);
+    let backoffConfig = (await backoff) as RequestConfigWithOptional;
+    return await request.request(backoffConfig, backoffConfig.requestOptions);
   }
 
-  requestCatchHook(error: AxiosResponseError, options: RequestOptions): AxiosResponseError {
+  @Log
+  requestCatchHook(error: AxiosResponseError, options: AxiosOptionsConfig): AxiosResponseError {
     if (error.config?.retryCount && error.config.retryCount === (options.retry?.count || 3)) {
       error.config.retryCount += 1;
       ElMessage({ message: error.message, type: 'error', duration: 5 * 1000 })
@@ -188,9 +196,10 @@ export class AxiosTransformAbstract implements AxiosTransform {
     return error;
   }
 
+  @Log
   requestInterceptorsCatch(error: AxiosError): Promise<AxiosError> {
-    console.log('requestInterceptorsCatch')
-    return Promise.resolve(error);;
+    console.error('[requestInterceptorsCatch]', error);
+    return Promise.resolve(error);
   }
 
 }
