@@ -6,7 +6,7 @@ import SvgIcon from "@/components/framework/SvgIcon/index.vue";
 import SidebarItem from './SidebarItem';
 
 import { isExternal } from '@/utils/validate';
-import { getNormalPath } from '@/utils/ruoyi';
+import { getNormalPath } from '@/utils';
 
 export default defineComponent({
   name: 'SidebarItem',

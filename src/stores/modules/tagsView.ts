@@ -25,17 +25,17 @@ const useTagsViewStore = defineStore('tags-view', {
         this.cachedViews.push(view.name as string)
       }
     },
-    delView(view: Record<string, any>) {
+    delView(view: RouteLocationNormalizedLoaded): Promise<TagsView> {
       return new Promise(resolve => {
         this.delVisitedView(view)
         this.delCachedView(view)
         resolve({
           visitedViews: [...this.visitedViews],
           cachedViews: [...this.cachedViews]
-        })
+        } as TagsView)
       })
     },
-    delVisitedView(view: Record<string, any>) {
+    delVisitedView(view: RouteLocationNormalizedLoaded) {
       return new Promise(resolve => {
         for (const [i, v] of this.visitedViews.entries()) {
           if (v.path === view.path) {
@@ -47,20 +47,20 @@ const useTagsViewStore = defineStore('tags-view', {
         resolve([...this.visitedViews])
       })
     },
-    delIframeView(view: Record<string, any>) {
+    delIframeView(view: RouteLocationNormalizedLoaded) {
       return new Promise(resolve => {
         this.iframeViews = this.iframeViews.filter(item => item.path !== view.path)
         resolve([...this.iframeViews])
       })
     },
-    delCachedView(view: Record<string, any>) {
+    delCachedView(view: RouteLocationNormalizedLoaded) {
       return new Promise(resolve => {
-        const index = this.cachedViews.indexOf(view.name)
+        const index = this.cachedViews.indexOf(view.name as string)
         index > -1 && this.cachedViews.splice(index, 1)
         resolve([...this.cachedViews])
       })
     },
-    delOthersViews(view: Record<string, any>) {
+    delOthersViews(view: RouteLocationNormalizedLoaded) {
       return new Promise(resolve => {
         this.delOthersVisitedViews(view)
         this.delOthersCachedViews(view)
@@ -70,7 +70,7 @@ const useTagsViewStore = defineStore('tags-view', {
         })
       })
     },
-    delOthersVisitedViews(view: Record<string, any>) {
+    delOthersVisitedViews(view: RouteLocationNormalizedLoaded) {
       return new Promise(resolve => {
         this.visitedViews = this.visitedViews.filter(v => {
           return v.meta.affix || v.path === view.path
@@ -79,9 +79,9 @@ const useTagsViewStore = defineStore('tags-view', {
         resolve([...this.visitedViews])
       })
     },
-    delOthersCachedViews(view: Record<string, any>) {
+    delOthersCachedViews(view: RouteLocationNormalizedLoaded) {
       return new Promise(resolve => {
-        const index = this.cachedViews.indexOf(view.name)
+        const index = this.cachedViews.indexOf(view.name as string)
         if (index > -1) {
           this.cachedViews = this.cachedViews.slice(index, index + 1)
         } else {
@@ -90,7 +90,7 @@ const useTagsViewStore = defineStore('tags-view', {
         resolve([...this.cachedViews])
       })
     },
-    delAllViews(view: Record<string, any>) {
+    delAllViews(view: RouteLocationNormalizedLoaded) {
       return new Promise(resolve => {
         this.delAllVisitedViews(view)
         this.delAllCachedViews(view)
@@ -100,7 +100,7 @@ const useTagsViewStore = defineStore('tags-view', {
         })
       })
     },
-    delAllVisitedViews(view: Record<string, any>) {
+    delAllVisitedViews(view: RouteLocationNormalizedLoaded) {
       return new Promise(resolve => {
         const affixTags = this.visitedViews.filter(tag => tag.meta.affix)
         this.visitedViews = affixTags
@@ -108,13 +108,13 @@ const useTagsViewStore = defineStore('tags-view', {
         resolve([...this.visitedViews])
       })
     },
-    delAllCachedViews(view: Record<string, any>) {
+    delAllCachedViews(view: RouteLocationNormalizedLoaded) {
       return new Promise(resolve => {
         this.cachedViews = []
         resolve([...this.cachedViews])
       })
     },
-    updateVisitedView(view: Record<string, any>) {
+    updateVisitedView(view: RouteLocationNormalizedLoaded) {
       for (let v of this.visitedViews) {
         if (v.path === view.path) {
           v = Object.assign(v, view)
@@ -122,7 +122,7 @@ const useTagsViewStore = defineStore('tags-view', {
         }
       }
     },
-    delRightTags(view: Record<string, any>) {
+    delRightTags(view: RouteLocationNormalizedLoaded) {
       return new Promise(resolve => {
         const index = this.visitedViews.findIndex(v => v.path === view.path)
         if (index === -1) {
@@ -145,7 +145,7 @@ const useTagsViewStore = defineStore('tags-view', {
         resolve([...this.visitedViews])
       })
     },
-    delLeftTags(view: Record<string, any>) {
+    delLeftTags(view: RouteLocationNormalizedLoaded) {
       return new Promise(resolve => {
         const index = this.visitedViews.findIndex(v => v.path === view.path)
         if (index === -1) {

@@ -1,7 +1,7 @@
 import { defineComponent, TransitionGroup } from "vue";
 import { ElBreadcrumb, ElBreadcrumbItem } from "element-plus";
 import { RouteLocationMatched, RouteLocationRaw } from "vue-router";
-import './index.scss'
+import style from './index.module.scss'
 
 export default defineComponent({
   name: 'Breadcrumb',
@@ -50,7 +50,7 @@ export default defineComponent({
 
     const renderContext = (item: RouteLocationMatched, index: number) => (<>
       { item.redirect === 'noRedirect' || index == levelList.value.length - 1
-          ? <span class="no-redirect">{ item.meta.title }</span>
+          ? <span class={style.noRedirect}>{ item.meta.title }</span>
           : <a onClick={(e) => {
             e.preventDefault();
             handleLink(item);
@@ -65,7 +65,7 @@ export default defineComponent({
       default: renderBreadcrumbItem
     }} />
 
-    const renderBreadcrumb = () => <ElBreadcrumb class="app-breadcrumb" separator="/" v-slots={{
+    const renderBreadcrumb = () => <ElBreadcrumb class={style.appBreadcrumb} separator="/" v-slots={{
       default: renderTransitionGroup
     }} />
 

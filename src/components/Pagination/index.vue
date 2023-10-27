@@ -8,6 +8,7 @@
       :page-sizes="pageSizes"
       :pager-count="pagerCount"
       :total="total"
+      :small="small"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
     />
@@ -15,7 +16,10 @@
 </template>
 
 <script setup>
+import useAppStore from "@/stores/modules/app";
 import { scrollTo } from '@/utils/scroll-to'
+
+const small = computed(() => useAppStore().size === 'small');
 
 const props = defineProps({
   total: {

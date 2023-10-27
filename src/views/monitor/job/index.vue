@@ -183,8 +183,7 @@
                      <el-input v-model="form.cronExpression" placeholder="请输入cron执行表达式">
                         <template #append>
                            <el-button type="primary" @click="handleShowCron">
-                              生成表达式
-                              <i class="el-icon-time el-icon--right"></i>
+                              生成表达式<el-icon class="el-icon--right"><Timer/></el-icon>
                            </el-button>
                         </template>
                      </el-input>

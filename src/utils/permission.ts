@@ -5,7 +5,7 @@ import useUserStore from '@/stores/modules/user'
  * @param {Array} value 校验值
  * @returns {Boolean}
  */
-export function checkPermi(value) {
+export function checkPermi(value: string[]) {
   if (value && value instanceof Array && value.length > 0) {
     const permissions = useUserStore().permissions
     const permissionDatas = value
@@ -30,7 +30,7 @@ export function checkPermi(value) {
  * @param {Array} value 校验值
  * @returns {Boolean}
  */
-export function checkRole(value) {
+export function checkRole(value: string[]) {
   if (value && value instanceof Array && value.length > 0) {
     const roles = useUserStore().roles
     const permissionRoles = value

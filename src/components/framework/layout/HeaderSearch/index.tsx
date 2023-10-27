@@ -1,11 +1,11 @@
 import { defineComponent } from "vue";
 import { ElOption, ElSelect } from "element-plus";
 import Fuse from 'fuse.js';
-import { getNormalPath } from '@/utils/ruoyi';
+import { getNormalPath } from '@/utils';
 import { isHttp } from '@/utils/validate';
 import usePermissionStore from '@/stores/modules/permission';
 
-import './index.scss';
+import classStyle from './index.module.scss';
 
 interface HeaderSearch {
   title: string[];
@@ -129,8 +129,14 @@ export default defineComponent({
 
     const renderOption = () => options.value.map((option) => <ElOption key={option.item.path} value={option.item} label={option.item.title.join(' > ')}/>);
 
+    const buttonStyle = ref({
+      '::v-deep .el-input__inner': {
+        backgroundColor: 'red',
+      },
+    })
     const renderSelect = () => <ElSelect
-        class="header-search-select"
+        class={['renderElSelect', classStyle.headerSearchSelect]}
+        v-bind:style={buttonStyle}
         ref="headerSearchSelectRef"
         modelValue={search.value}
         remoteMethod={() => querySearch()}
@@ -144,8 +150,8 @@ export default defineComponent({
         }}
     />
 
-    const renderHeaderSearch = () => <div class={['header-search', show.value && 'show']}>
-      <svg-icon class-name="search-icon" icon-class="search" onClick={(e: MouseEvent) => {
+    const renderHeaderSearch = () => <div class={[classStyle.headerSearch, show.value && classStyle.show]}>
+      <svg-icon class-name={classStyle.searchIcon} icon-class="search" onClick={(e: MouseEvent) => {
         e.stopPropagation();
         click();
       }} />

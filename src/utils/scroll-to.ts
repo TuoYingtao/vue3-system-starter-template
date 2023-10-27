@@ -1,4 +1,5 @@
-Math.easeInOutQuad = function(t, b, c, d) {
+// @ts-ignore
+Math.easeInOutQuad = function(t: number, b: number, c: number, d: number) {
   t /= d / 2
   if (t < 1) {
     return c / 2 * t * t + b
@@ -9,6 +10,7 @@ Math.easeInOutQuad = function(t, b, c, d) {
 
 // requestAnimationFrame for Smart Animating http://goo.gl/sx5sts
 var requestAnimFrame = (function() {
+  // @ts-ignore
   return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || function(callback) { window.setTimeout(callback, 1000 / 60) }
 })()
 
@@ -16,13 +18,15 @@ var requestAnimFrame = (function() {
  * Because it's so fucking difficult to detect the scrolling element, just move them all
  * @param {number} amount
  */
-function move(amount) {
+function move(amount: number) {
   document.documentElement.scrollTop = amount
+  // @ts-ignore
   document.body.parentNode.scrollTop = amount
   document.body.scrollTop = amount
 }
 
 function position() {
+  // @ts-ignore
   return document.documentElement.scrollTop || document.body.parentNode.scrollTop || document.body.scrollTop
 }
 
@@ -31,7 +35,7 @@ function position() {
  * @param {number} duration
  * @param {Function} callback
  */
-export function scrollTo(to, duration, callback) {
+export function scrollTo(to: number, duration: number, callback: Function) {
   const start = position()
   const change = to - start
   const increment = 20
@@ -41,6 +45,7 @@ export function scrollTo(to, duration, callback) {
     // increment the time
     currentTime += increment
     // find the value with the quadratic in-out easing function
+    // @ts-ignore
     var val = Math.easeInOutQuad(currentTime, start, change, duration)
     // move the document.body
     move(val)

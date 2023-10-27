@@ -1,5 +1,7 @@
 import {App} from 'vue';
 import HasPermission from '@/directive/permission/HasPermission';
+import HasPermi from '@/directive/permission/HasPermi';
+import HasRole from '@/directive/permission/HasRole';
 import Debounce from '@/directive/common/Debounce';
 import Throttle from '@/directive/common/Throttle';
 import Hide from '@/directive/common/Hide';
@@ -22,6 +24,8 @@ export default {
    */
   install(app: App<Element>) {
     HasPermission(app);
+    HasPermi(app);
+    HasRole(app);
     Debounce.install(app);
     Throttle(app);
     Hide.install(app);

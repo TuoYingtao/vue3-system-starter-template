@@ -94,3 +94,27 @@
 .el-dropdown .el-dropdown-link{
   color: var(--el-color-primary) !important;
 }
+
+.renderElSelect {
+
+  .el-input el-input--suffix,
+  .el-input el-input--suffix.is-focus,
+  .el-input el-input--suffix:hover,
+  .el-input el-input--suffix.is-focus:hover,
+  .el-input__wrapper.is-focus,
+  .el-input__wrapper:hover,
+  .el-input__wrapper.is-focus:hover,
+  .el-input__wrapper {
+    box-shadow: none;
+  }
+
+  .el-input__inner {
+    border-radius: 0;
+    border: 0;
+    padding-left: 0;
+    padding-right: 0;
+    box-shadow: none !important;
+    border-bottom: 1px solid #d9d9d9;
+    vertical-align: middle;
+  }
+}

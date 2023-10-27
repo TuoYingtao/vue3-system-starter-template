@@ -4,7 +4,7 @@ export default {
   install(app: App<Element>) {
     app.directive('hide', {
       mounted(el: any) {
-        el.handler = (e) => {
+        el.handler = (e: any) => {
           console.log(el, e);
         };
         // 监听全局的点击事件

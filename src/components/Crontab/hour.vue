@@ -106,11 +106,11 @@ function onRadioChange() {
             emit('update', 'hour', averageTotal.value, 'hour')
             break
         case 4:
-            if (checkboxList.value.length === 0) {
-                checkboxList.value.push(checkCopy.value[0])
-            } else {
-                checkCopy.value = checkboxList.value
-            }
+            // if (checkboxList.value.length === 0) {
+            //     checkboxList.value.push(checkCopy.value[0])
+            // } else {
+            //     checkCopy.value = checkboxList.value
+            // }
             emit('update', 'hour', checkboxString.value, 'hour')
             break
     }

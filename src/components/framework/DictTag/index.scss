@@ -1,3 +1,5 @@
-.el-tag + .el-tag {
-  margin-left: 10px;
+:local {
+  .el-tag + .el-tag {
+    margin-left: 10px;
+  }
 }

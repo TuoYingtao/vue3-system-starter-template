@@ -1,3 +1,4 @@
+// @ts-ignore
 import { getDicts } from '@/api/system/dict/data'
 import useDictStore from "@/stores/modules/dict";
 

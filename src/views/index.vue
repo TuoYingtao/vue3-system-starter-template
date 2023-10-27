@@ -1,5 +1,8 @@
 <template>
   <div class="app-container home">
+    <el-select clearable v-model="checkboxList" placeholder="可多选" multiple :multiple-limit="8">
+      <el-option v-for="(item, index) in 9" :key="index" :value="item" :label="item"/>
+    </el-select>
     <el-row :gutter="20">
       <el-col :sm="24" :lg="24">
         <blockquote class="text-warning" style="font-size: 14px">
@@ -120,8 +123,8 @@
             <p>
               <i class="el-icon-user-solid"></i> QQ群：<s> 满937441 </s> <s> 满887144332 </s>
               <s> 满180251782 </s> <s> 满104180207 </s> <s> 满186866453 </s> <s> 满201396349 </s>
-              <s> 满101456076 </s> <s> 满101539465 </s> <s> 满264312783 </s> <s> 满167385320 </s> 
-              <s> 满104748341 </s> <s> 满160110482 </s> <s> 满170801498 </s> <s> 满108482800 </s> 
+              <s> 满101456076 </s> <s> 满101539465 </s> <s> 满264312783 </s> <s> 满167385320 </s>
+              <s> 满104748341 </s> <s> 满160110482 </s> <s> 满170801498 </s> <s> 满108482800 </s>
               <s> 满101046199 </s> <s> 满136919097 </s> <a href="http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=0vBbSb0ztbBgVtn3kJS-Q4HUNYwip89G&authKey=8irq5PhutrZmWIvsUsklBxhj57l%2F1nOZqjzigkXZVoZE451GG4JHPOqW7AW6cf0T&noverify=0&group_code=143961921" target="_blank">143961921</a>
             </p>
             <p>
@@ -946,6 +949,8 @@
 
 <script setup name="Index">
 const version = ref('3.8.6')
+
+const checkboxList = ref()
 
 function goTarget(url) {
   window.open(url, '__blank')

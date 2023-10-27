@@ -11,14 +11,12 @@ import directive from './directive';
 import plugins from './plugins';
 import './permission' // permission control
 
-import ElementPlus from 'element-plus';
-import locale from "element-plus/es/locale/lang/zh-cn"; // 中文语言
 import { useVueViewer } from "@/components/framework/VueViewer";
 import elementIcons from '@/components/framework/SvgIcon/svgIcon.js'
 
 import { download } from '@/utils/request'
 import { useDict } from '@/utils/dict'
-import { parseTime, resetForm, addDateRange, handleTree, selectDictLabel, selectDictLabels } from '@/utils/ruoyi'
+import { parseTime, resetForm, addDateRange, handleTree, selectDictLabel, selectDictLabels } from '@/utils'
 
 const app = createApp(App);
 
@@ -39,11 +37,6 @@ app.use(router);
 app.use(stores);
 app.use(directive);
 app.use(plugins);
-// 全局注册element-plus 并且设置全局的大小
-ElementPlus.install(app, {
-  locale: locale,
-  size: "small"
-})
 app.use(elementIcons)
 
 app.mount('#app');
