@@ -1,5 +1,5 @@
 import auth from "@/plugins/auth";
-import router, { constantRoutes, dynamicRoutes } from '@/router'
+import router, { baseRoutes, constantRoutes, dynamicRoutes } from '@/router'
 import { getRouters } from '@/api/menu'
 import Layout from '@/layout/index.vue'
 import ParentView from '@/components/framework/ParentView/index.vue'
@@ -32,25 +32,35 @@ const usePermissionStore = defineStore('permission', {
       this.sidebarRouters = routes
     },
     generateRoutes(roles?: string): Promise<LayoutRoutes[]> {
-      return new Promise(resolve => {
-        // 向后端请求路由数据
-        getRouters().then(res => {
+      console.log(roles)
+      const routersInfo: Record<string, LayoutRoutes[]> = {
+        defaultRoutes: [],
+        rewriteRoutes: [],
+        asyncRoutes: [],
+        sidebarRoutes: [],
+      };
+      return new Promise(async resolve => {
+        if (roles && roles.length > 1) {
+          // 向后端请求路由数据
+          const res = await getRouters();
           const sdata = JSON.parse(JSON.stringify(res.data))
           const rdata = JSON.parse(JSON.stringify(res.data))
           const defaultData = JSON.parse(JSON.stringify(res.data))
-          const sidebarRoutes = filterAsyncRouter(sdata)
-          const rewriteRoutes = filterAsyncRouter(rdata, false, true)
-          const defaultRoutes = filterAsyncRouter(defaultData)
-          const asyncRoutes = filterDynamicRoutes(dynamicRoutes)
-          asyncRoutes.forEach(route => {
-            router.addRoute(route as RouteRecordRaw)
-          })
-          this.setRoutes(rewriteRoutes)
-          this.setSidebarRouters(constantRoutes.concat(sidebarRoutes))
-          this.setDefaultRoutes(sidebarRoutes)
-          this.setTopbarRoutes(defaultRoutes)
-          resolve(rewriteRoutes)
+          routersInfo.sidebarRoutes = filterAsyncRouter(sdata)
+          routersInfo.rewriteRoutes = filterAsyncRouter(rdata, false, true)
+          routersInfo.defaultRoutes = filterAsyncRouter(defaultData)
+        }
+        routersInfo.defaultRoutes.concat(filterDynamicRoutes(baseRoutes))
+        routersInfo.rewriteRoutes.concat(filterDynamicRoutes(baseRoutes))
+        routersInfo.asyncRoutes.concat(filterDynamicRoutes(dynamicRoutes))
+        routersInfo.asyncRoutes.forEach(route => {
+          router.addRoute(route as RouteRecordRaw)
         })
+        this.setRoutes(routersInfo.rewriteRoutes)
+        this.setDefaultRoutes(routersInfo.sidebarRoutes)
+        this.setSidebarRouters(constantRoutes.concat(routersInfo.sidebarRoutes))
+        this.setTopbarRoutes(routersInfo.defaultRoutes)
+        resolve(routersInfo.rewriteRoutes)
       })
     }
   }

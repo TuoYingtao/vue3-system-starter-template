@@ -2,13 +2,12 @@ import router from './router'
 import { ElMessage } from 'element-plus'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
-import { getToken } from '@/utils/auth'
 import { isHttp } from '@/utils/validate'
-import { isRelogin } from '@/utils/request'
 import useUserStore from '@/stores/modules/user'
 import useSettingsStore from '@/stores/modules/settings'
 import usePermissionStore from '@/stores/modules/permission'
 import { RouteRecordRaw } from "vue-router";
+import { CookiesUtils } from "@/utils/request/utils/Cookies";
 
 NProgress.configure({ showSpinner: false });
 
@@ -16,7 +15,7 @@ const whiteList = ['/login', '/register'];
 
 router.beforeEach((to, from, next) => {
   NProgress.start()
-  if (getToken()) {
+  if (CookiesUtils.get()) {
     to.meta.title && useSettingsStore().setTitle(to.meta.title as string)
     /* has token*/
     if (to.path === '/login') {
@@ -24,11 +23,10 @@ router.beforeEach((to, from, next) => {
       NProgress.done()
     } else {
       if (useUserStore().roles.length === 0) {
-        isRelogin.show = true
         // 判断当前用户是否已拉取完user_info信息
-        useUserStore().getInfo().then(() => {
-          isRelogin.show = false
-          usePermissionStore().generateRoutes().then(accessRoutes => {
+        useUserStore().getInfo().then((info: any) => {
+          console.log(info)
+          usePermissionStore().generateRoutes(info.roles).then(accessRoutes => {
             // 根据roles权限生成可访问的路由表
             accessRoutes.forEach(route => {
               if (!isHttp(route.path)) {

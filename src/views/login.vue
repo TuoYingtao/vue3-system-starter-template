@@ -66,14 +66,20 @@
 
 <script setup>
 import { getCodeImg } from "@/api/login";
-import Cookies from "js-cookie";
 import { encrypt, decrypt } from "@/utils/jsencrypt";
 import useUserStore from '@/stores/modules/user'
+import { CookiesUtils } from "@/utils/request/utils/Cookies";
 
 const userStore = useUserStore()
 const route = useRoute();
 const router = useRouter();
 const { proxy } = getCurrentInstance();
+let cookiesUtils = CookiesUtils.getCooliesUtilsInstance();
+const LOGIN_FIELD = {
+  USERNAME: "username",
+  PASSWORD: "password",
+  REMEMBER_ME: "rememberMe",
+}
 
 const loginForm = ref({
   username: "admin",
@@ -107,14 +113,12 @@ function handleLogin() {
       loading.value = true;
       // 勾选了需要记住密码设置在 cookie 中设置记住用户名和密码
       if (loginForm.value.rememberMe) {
-        Cookies.set("username", loginForm.value.username, { expires: 30 });
-        Cookies.set("password", encrypt(loginForm.value.password), { expires: 30 });
-        Cookies.set("rememberMe", loginForm.value.rememberMe, { expires: 30 });
+        cookiesUtils.set({ key: LOGIN_FIELD.USERNAME, value: loginForm.value.username, expires: 30 });
+        cookiesUtils.set({ key: LOGIN_FIELD.PASSWORD, value: encrypt(loginForm.value.password), expires: 30 });
+        cookiesUtils.set({ key: LOGIN_FIELD.REMEMBER_ME, value: loginForm.value.rememberMe, expires: 30 });
       } else {
         // 否则移除
-        Cookies.remove("username");
-        Cookies.remove("password");
-        Cookies.remove("rememberMe");
+        cookiesUtils.batchRemove(LOGIN_FIELD.USERNAME, LOGIN_FIELD.PASSWORD, LOGIN_FIELD.REMEMBER_ME);
       }
       // 调用action的登录方法
       userStore.login(loginForm.value).then(() => {
@@ -148,9 +152,9 @@ function getCode() {
 }
 
 function getCookie() {
-  const username = Cookies.get("username");
-  const password = Cookies.get("password");
-  const rememberMe = Cookies.get("rememberMe");
+  const username = cookiesUtils.get(LOGIN_FIELD.USERNAME);
+  const password = cookiesUtils.get(LOGIN_FIELD.PASSWORD);
+  const rememberMe = cookiesUtils.get(LOGIN_FIELD.REMEMBER_ME);
   loginForm.value = {
     username: username === undefined ? loginForm.value.username : username,
     password: password === undefined ? loginForm.value.password : decrypt(password),

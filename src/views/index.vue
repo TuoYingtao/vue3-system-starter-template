@@ -1,8 +1,5 @@
 <template>
   <div class="app-container home">
-    <el-select clearable v-model="checkboxList" placeholder="可多选" multiple :multiple-limit="8">
-      <el-option v-for="(item, index) in 9" :key="index" :value="item" :label="item"/>
-    </el-select>
     <el-row :gutter="20">
       <el-col :sm="24" :lg="24">
         <blockquote class="text-warning" style="font-size: 14px">
@@ -948,6 +945,7 @@
 </template>
 
 <script setup name="Index">
+import Crontab from '@/components/Crontab/index.vue';
 const version = ref('3.8.6')
 
 const checkboxList = ref()

@@ -1,4 +1,5 @@
 import { defineComponent } from "vue";
+import { useDark, useToggle } from '@vueuse/core'
 import { ElDropdown, ElDropdownMenu, ElIcon, ElMessageBox, ElTooltip } from 'element-plus'
 
 import useAppStore from '@/stores/modules/app'
@@ -20,6 +21,8 @@ export default defineComponent({
     const appStore = useAppStore()
     const userStore = useUserStore()
     const settingsStore = useSettingsStore()
+    const isDark = useDark()
+    const toggleDark = useToggle(isDark)
 
     function toggleSideBar() {
       appStore.toggleSideBar(false)
@@ -55,6 +58,15 @@ export default defineComponent({
     }
 
     emit('setLayout')
+
+    const renderDark = () => <div onClick={() => toggleDark}>
+      <el-switch size='small'
+                 style="--el-switch-off-color: #CCCCCC; --el-switch-on-color: var(--theme-color);"
+                 active-action-icon="Moon"
+                 inactive-action-icon="Sunny"
+                 v-model={isDark.value}
+      />
+    </div>
 
     const renderGit = () => {
       const url = "https://gitee.com/y_project/RuoYi-Vue"
@@ -94,9 +106,12 @@ export default defineComponent({
     }} />
 
     return {
+      toggleDark,
+      isDark,
       settingsStore,
       appStore,
       renderGit,
+      renderDark,
       toggleSideBar,
       renderTooltip,
       renderDropdown,
@@ -112,6 +127,7 @@ export default defineComponent({
         {this.appStore.device !== 'mobile' && (<>
           {// @ts-ignore
             <HeaderSearch id="header-search" class="right-menu-item" />}
+          {false && this.renderTooltip('黑暗主题', this.renderDark())}
           { this.renderTooltip('源码地址', this.renderGit()) }
           <Screenfull id="screenfull" class="right-menu-item hover-effect" />
           { this.renderTooltip('布局大小', (<SizeSelect id="size-select" class="right-menu-item hover-effect" />)) }

@@ -129,14 +129,8 @@ export default defineComponent({
 
     const renderOption = () => options.value.map((option) => <ElOption key={option.item.path} value={option.item} label={option.item.title.join(' > ')}/>);
 
-    const buttonStyle = ref({
-      '::v-deep .el-input__inner': {
-        backgroundColor: 'red',
-      },
-    })
     const renderSelect = () => <ElSelect
         class={['renderElSelect', classStyle.headerSearchSelect]}
-        v-bind:style={buttonStyle}
         ref="headerSearchSelectRef"
         modelValue={search.value}
         remoteMethod={() => querySearch()}

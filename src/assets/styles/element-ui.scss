@@ -1,4 +1,21 @@
-// cover some element-ui styles
+// cover some element-ui
+
+:root {
+  --theme-color: #545d68;
+}
+
+html.dark {
+  /* 自定义深色背景颜色 */
+  --el-bg-color: var(--theme-color);
+  .el-button--primary {
+    --el-button-text-color: var(--theme-color);
+  }
+  /* 暗黑模式下的图片 */
+  img,
+  .dark-img-bg {
+    filter:brightness(0.8) saturate(1.25)
+  }
+}
 
 .el-breadcrumb__inner,
 .el-breadcrumb__inner a {

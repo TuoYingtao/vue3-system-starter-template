@@ -39,7 +39,7 @@ export default defineComponent({
 
     const showTip = computed(() => props.isShowTip && (props.fileType || props.fileSize));
 
-    watch(() => props.modelValue, val => {
+    watch(() => props.modelValue, (val: Object) => {
       if (val) {
         let temp = 1;
         // 首先将值转为数组
@@ -172,7 +172,7 @@ export default defineComponent({
         type={options.type}
         href={options.href}
         underline={options.underline}
-        onClick={(e) => clickCallback(e)}
+        onClick={(e: any) => clickCallback(e)}
         v-slots={{
       default: slotsCallback()
     }} />
@@ -205,7 +205,7 @@ export default defineComponent({
       }
       { // @ts-ignore
         <TransitionGroup class="upload-file-list el-upload-list el-upload-list--text" name="el-fade-in-linear" tag="ul">
-          {fileList.value.map((file, index) => <li class="el-upload-list__item ele-upload-list__item-content" key={file.uid}>
+          {fileList.value.map((file: Record<string, any>, index: number) => <li class="el-upload-list__item ele-upload-list__item-content" key={file.uid}>
             {renderLink(
                 () => <span class="el-icon-document">{getFileName(file.name)}</span>,
                 () => {},

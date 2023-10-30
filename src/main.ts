@@ -1,6 +1,7 @@
 import 'virtual:svg-icons-register';
-import 'element-plus/dist/index.css'
-import '@/assets/styles/index.scss'
+import 'element-plus/theme-chalk/dark/css-vars.css';
+import 'element-plus/dist/index.css';
+import '@/assets/styles/index.scss';
 
 import { createApp } from 'vue';
 
@@ -9,14 +10,14 @@ import router from './router';
 import stores from "./stores";
 import directive from './directive';
 import plugins from './plugins';
-import './permission' // permission control
+import './permission'; // permission control
 
 import { useVueViewer } from "@/components/framework/VueViewer";
-import elementIcons from '@/components/framework/SvgIcon/svgIcon.js'
+import elementIcons from '@/components/framework/SvgIcon/svgIcon.js';
 
-import { download } from '@/utils/request'
-import { useDict } from '@/utils/dict'
-import { parseTime, resetForm, addDateRange, handleTree, selectDictLabel, selectDictLabels } from '@/utils'
+import { download } from '@/utils/request';
+import { useDict } from '@/utils/dict';
+import { parseTime, resetForm, addDateRange, handleTree, selectDictLabel, selectDictLabels } from '@/utils';
 
 const app = createApp(App);
 
