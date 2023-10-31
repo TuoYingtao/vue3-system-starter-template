@@ -1,7 +1,7 @@
 <template>
   <div class="login">
     <el-form ref="loginRef" :model="loginForm" :rules="loginRules" class="login-form">
-      <h3 class="title">若依后台管理系统</h3>
+      <h3 class="title">{{ VITE_APP_NAME }}</h3>
       <el-form-item prop="username">
         <el-input
             v-model="loginForm.username"
@@ -10,7 +10,9 @@
             auto-complete="off"
             placeholder="账号"
         >
-          <template #prefix><svg-icon icon-class="user" class="el-input__icon input-icon" /></template>
+          <template #prefix>
+            <svg-icon icon-class="user" class="el-input__icon input-icon"/>
+          </template>
         </el-input>
       </el-form-item>
       <el-form-item prop="password">
@@ -22,27 +24,33 @@
             placeholder="密码"
             @keyup.enter="handleLogin"
         >
-          <template #prefix><svg-icon icon-class="password" class="el-input__icon input-icon" /></template>
+          <template #prefix>
+            <svg-icon icon-class="password" class="el-input__icon input-icon"/>
+          </template>
         </el-input>
       </el-form-item>
-      <el-form-item prop="code" v-if="captchaEnabled">
+      <el-form-item class="password-form-item" prop="code" v-if="captchaEnabled">
         <el-input
             v-model="loginForm.code"
             size="large"
             auto-complete="off"
             placeholder="验证码"
-            style="width: 63%"
+            style="flex: 3"
             @keyup.enter="handleLogin"
         >
-          <template #prefix><svg-icon icon-class="validCode" class="el-input__icon input-icon" /></template>
+          <template #prefix>
+            <svg-icon icon-class="validCode" class="el-input__icon input-icon"/>
+          </template>
         </el-input>
-        <div class="login-code">
+        <div class="login-code" style="flex: 1;">
           <img :src="codeUrl" @click="getCode" class="login-code-img"/>
         </div>
       </el-form-item>
-      <el-checkbox v-model="loginForm.rememberMe" style="margin:0px 0px 25px 0px;">记住密码</el-checkbox>
+      <el-checkbox class="checkbox" v-model="loginForm.rememberMe">记住密码
+      </el-checkbox>
       <el-form-item style="width:100%;">
         <el-button
+            class="button-login"
             :loading="loading"
             size="large"
             type="primary"
@@ -59,7 +67,7 @@
     </el-form>
     <!--  底部  -->
     <div class="el-login-footer">
-      <span>Copyright © 2018-2023 ruoyi.vip All Rights Reserved.</span>
+      <span>{{ COPYRIGHT_INFO }}</span>
     </div>
   </div>
 </template>
@@ -69,11 +77,12 @@ import { getCodeImg } from "@/api/login";
 import { encrypt, decrypt } from "@/utils/jsencrypt";
 import useUserStore from '@/stores/modules/user'
 import { CookiesUtils } from "@/utils/request/utils/Cookies";
+import { COPYRIGHT_INFO, VITE_APP_NAME } from "@/config/global";
 
 const userStore = useUserStore()
 const route = useRoute();
 const router = useRouter();
-const { proxy } = getCurrentInstance();
+const {proxy} = getCurrentInstance();
 let cookiesUtils = CookiesUtils.getCooliesUtilsInstance();
 const LOGIN_FIELD = {
   USERNAME: "username",
@@ -90,9 +99,9 @@ const loginForm = ref({
 });
 
 const loginRules = {
-  username: [{ required: true, trigger: "blur", message: "请输入您的账号" }],
-  password: [{ required: true, trigger: "blur", message: "请输入您的密码" }],
-  code: [{ required: true, trigger: "change", message: "请输入验证码" }]
+  username: [{required: true, trigger: "blur", message: "请输入您的账号"}],
+  password: [{required: true, trigger: "blur", message: "请输入您的密码"}],
+  code: [{required: true, trigger: "change", message: "请输入验证码"}]
 };
 
 const codeUrl = ref("");
@@ -105,7 +114,7 @@ const redirect = ref(undefined);
 
 watch(route, (newRoute) => {
   redirect.value = newRoute.query && newRoute.query.redirect;
-}, { immediate: true });
+}, {immediate: true});
 
 function handleLogin() {
   proxy.$refs.loginRef.validate(valid => {
@@ -113,9 +122,9 @@ function handleLogin() {
       loading.value = true;
       // 勾选了需要记住密码设置在 cookie 中设置记住用户名和密码
       if (loginForm.value.rememberMe) {
-        cookiesUtils.set({ key: LOGIN_FIELD.USERNAME, value: loginForm.value.username, expires: 30 });
-        cookiesUtils.set({ key: LOGIN_FIELD.PASSWORD, value: encrypt(loginForm.value.password), expires: 30 });
-        cookiesUtils.set({ key: LOGIN_FIELD.REMEMBER_ME, value: loginForm.value.rememberMe, expires: 30 });
+        cookiesUtils.set({key: LOGIN_FIELD.USERNAME, value: loginForm.value.username, expires: 30});
+        cookiesUtils.set({key: LOGIN_FIELD.PASSWORD, value: encrypt(loginForm.value.password), expires: 30});
+        cookiesUtils.set({key: LOGIN_FIELD.REMEMBER_ME, value: loginForm.value.rememberMe, expires: 30});
       } else {
         // 否则移除
         cookiesUtils.batchRemove(LOGIN_FIELD.USERNAME, LOGIN_FIELD.PASSWORD, LOGIN_FIELD.REMEMBER_ME);
@@ -129,7 +138,7 @@ function handleLogin() {
           }
           return acc;
         }, {});
-        router.push({ path: redirect.value || "/", query: otherQueryParams });
+        router.push({path: redirect.value || "/", query: otherQueryParams});
       }).catch(() => {
         loading.value = false;
         // 重新获取验证码
@@ -167,6 +176,17 @@ getCookie();
 </script>
 
 <style lang='scss' scoped>
+:deep(.el-form-item) {
+  margin-bottom: 14px;
+}
+
+.checkbox {
+  float: left;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  padding-bottom: 10px;
+}
+
 .login {
   display: flex;
   justify-content: center;
@@ -175,43 +195,56 @@ getCookie();
   background-image: url("~/src/assets/images/login-background.jpg");
   background-size: cover;
 }
+
 .title {
-  margin: 0px auto 30px auto;
+  margin: 0px auto 20px auto;
   text-align: center;
-  color: #707070;
+  color: #000;
+  font-weight: bold;
 }
 
 .login-form {
+  position: relative;
+  z-index: 9999;
   border-radius: 6px;
-  background: #ffffff;
-  width: 400px;
+  backdrop-filter: blur(3px);
+  background: rgba(255, 250, 250, 0.5);
+  transition: 0.5s ease;
+  width: 420px;
   padding: 25px 25px 5px 25px;
+
   .el-input {
-    height: 40px;
+    height: 38px;
+
     input {
-      height: 40px;
+      height: 38px;
     }
   }
+
   .input-icon {
     height: 39px;
     width: 14px;
-    margin-left: 0px;
+    margin-left: 2px;
   }
 }
+
 .login-tip {
   font-size: 13px;
   text-align: center;
   color: #bfbfbf;
 }
+
 .login-code {
   width: 33%;
-  height: 40px;
+  height: 38px;
   float: right;
+
   img {
     cursor: pointer;
     vertical-align: middle;
   }
 }
+
 .el-login-footer {
   height: 40px;
   line-height: 40px;
@@ -224,8 +257,70 @@ getCookie();
   font-size: 12px;
   letter-spacing: 1px;
 }
+
+.password-form-item {
+
+}
+
 .login-code-img {
-  height: 40px;
+  height: 38px;
   padding-left: 12px;
+}
+
+// @import url('https://rsms.me/inter/inter-ui.css');
+/* 解决双击选择样式背景颜色
+  ::selection {
+  background: #2D2F36;
+  }
+  ::-webkit-selection {
+  background: #2D2F36;
+  }
+  ::-moz-selection {
+  background: #2D2F36;
+  }
+*/
+
+.button-login {
+  z-index: 1;
+  position: relative;
+  font-size: inherit;
+  font-family: inherit;
+  color: white;
+  outline: none;
+  border: none;
+  width: 90%;
+  height: 35px;
+  background-color: hsl(236, 32%, 26%) !important;
+  overflow: hidden;
+  transition: color 0.4s ease-in-out;
+}
+
+.button-login::before {
+  content: '';
+  z-index: -1;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2em;
+  height: 2em;
+  border-radius: 50%;
+  background-color: hsl(236, 28%, 18%);
+  transform-origin: center;
+  transform: translate3d(-50%, -50%, 0) scale3d(0, 0, 0);
+  transition: transform 0.45s ease-in-out;
+}
+
+.button-login:hover {
+  cursor: pointer; // 鼠标指针样式
+  color: white;
+}
+
+.button-login:hover:before {
+  transform: translate3d(-50%, -50%, 0) scale3d(15, 15, 15);
+}
+
+.button-login:active:before {
+  background-color: hsl(236, 28%, 18%);
+  transform: translate3d(-50%, -50%, 0) scale3d(15, 15, 15);
 }
 </style>

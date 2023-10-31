@@ -1,5 +1,5 @@
 export default {
-  title: import.meta.env.VITE_APP_TITLE,
+  title: import.meta.env.VITE_APP_NAME,
   theme: '#409EFF',
   sideTheme: 'theme-dark',
   showSettings: true,

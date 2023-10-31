@@ -17,7 +17,7 @@ import elementIcons from '@/components/framework/SvgIcon/svgIcon.js';
 
 import { download } from '@/utils/request';
 import { useDict } from '@/utils/dict';
-import { parseTime, resetForm, addDateRange, handleTree, selectDictLabel, selectDictLabels } from '@/utils';
+import { parseTime, resetForm, addDateRange, handleTree, selectDictLabel, selectDictLabels, HTMLTitle } from '@/utils';
 
 const app = createApp(App);
 
@@ -30,6 +30,7 @@ app.config.globalProperties.handleTree = handleTree
 app.config.globalProperties.addDateRange = addDateRange
 app.config.globalProperties.selectDictLabel = selectDictLabel
 app.config.globalProperties.selectDictLabels = selectDictLabels
+app.config.globalProperties.HTMLTitle = HTMLTitle
 
 // 全局组件挂载
 useVueViewer(app);

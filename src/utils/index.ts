@@ -339,3 +339,26 @@ export function getNormalPath(p: string) {
 export function blobValidate(data: Blob) {
   return data.type !== 'application/json'
 }
+
+/**
+ * 网页离开返回页面；网页标签提示
+ */
+export function HTMLTitle() {
+  const defaultSettings = import.meta.env.VITE_APP_NAME;
+  document.addEventListener('visibilitychange', function() {
+    const titleName = defaultSettings;// 页面标签标题
+    let isHidden = document.hidden;
+    let title = '(*´∇｀*) 欢迎回来！';
+    let title2 = '(oﾟvﾟ)ノ Hi';
+    if (isHidden) {
+      setTimeout(()=> {
+        document.title = title2;
+      },1000)
+    } else {
+      document.title = title;
+      setTimeout(()=> {
+        document.title = titleName;
+      },1000)
+    }
+  });
+}

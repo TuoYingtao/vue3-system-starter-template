@@ -25,7 +25,7 @@ defineProps({
   }
 })
 
-const title = import.meta.env.VITE_APP_TITLE;
+const title = import.meta.env.VITE_APP_NAME;
 const settingsStore = useSettingsStore();
 const sideTheme = computed(() => settingsStore.sideTheme);
 </script>

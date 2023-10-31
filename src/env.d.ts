@@ -1,6 +1,5 @@
 interface ImportMetaEnv extends Readonly<Record<string, string>> {
   readonly VITE_APP_NAME: string;
-  readonly VITE_APP_TITLE: string;
   readonly VITE_APP_ENV: string;
   readonly VITE_PORT: number;
   readonly VITE_HOST: string;

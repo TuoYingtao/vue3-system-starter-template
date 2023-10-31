@@ -7,8 +7,11 @@ import { RouterView } from 'vue-router'
 import useSettingsStore from '@/stores/modules/settings'
 import { handleThemeStyle } from '@/utils/theme'
 import { testApi } from "@/api/test";
+// @ts-ignore
+const { proxy } = getCurrentInstance();
 
 onMounted(() => {
+  proxy.HTMLTitle()
   nextTick(() => {
     // 初始化主题样式
     handleThemeStyle(useSettingsStore().theme)
