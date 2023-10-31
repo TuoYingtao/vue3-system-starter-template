@@ -41,11 +41,10 @@ const useUserStore = defineStore('user', {
         };
         if (true) {
           await useRequest.getInfoFun(function (res: Record<string, any>) {
-            console.log(res)
             const user = res.user
             const avatar = (user.avatar == "" || user.avatar == null) ? defAva : import.meta.env.VITE_APP_BASE_API + user.avatar;
             if (res.roles && res.roles.length > 0) { // 验证返回的roles是否是一个非空数组
-              info.roles.concat(res.roles);
+              info.roles.push(...res.roles);
               info.permissions = res.permissions
             }
             info.name = user.userName

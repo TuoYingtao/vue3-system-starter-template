@@ -25,7 +25,6 @@ router.beforeEach((to, from, next) => {
       if (useUserStore().roles.length === 0) {
         // 判断当前用户是否已拉取完user_info信息
         useUserStore().getInfo().then((info: any) => {
-          console.log(info)
           usePermissionStore().generateRoutes(info.roles).then(accessRoutes => {
             // 根据roles权限生成可访问的路由表
             accessRoutes.forEach(route => {
