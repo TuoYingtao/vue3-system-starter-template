@@ -49,9 +49,12 @@ const usePermissionStore = defineStore('permission', {
           routersInfo.rewriteRoutes = filterAsyncRouter(rdata, false, true)
           routersInfo.defaultRoutes = filterAsyncRouter(defaultData)
         }
-        routersInfo.defaultRoutes.concat(filterDynamicRoutes(baseRoutes))
-        routersInfo.rewriteRoutes.concat(filterDynamicRoutes(baseRoutes))
-        routersInfo.asyncRoutes.concat(filterDynamicRoutes(dynamicRoutes))
+        // 静态路由
+        routersInfo.sidebarRoutes.push(...filterDynamicRoutes(baseRoutes))
+        routersInfo.rewriteRoutes.push(...filterDynamicRoutes(baseRoutes))
+        routersInfo.defaultRoutes.push(...filterDynamicRoutes(baseRoutes))
+        // 与动态路由联动的静态路由，只有在动态路由有权限时才去添加有所关联的静态路由
+        routersInfo.asyncRoutes.push(...filterDynamicRoutes(dynamicRoutes))
         routersInfo.asyncRoutes.forEach(route => {
           router.addRoute(route as RouteRecordRaw)
         })

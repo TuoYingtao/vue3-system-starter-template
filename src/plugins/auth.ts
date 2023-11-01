@@ -1,4 +1,5 @@
 import useUserStore from '@/stores/modules/user'
+import { ROLE_DEFAULT } from "@/config/global";
 
 function authPermission(permission: string) {
   const all_permission = "*:*:*";
@@ -13,8 +14,10 @@ function authPermission(permission: string) {
 }
 
 function authRole(role: string) {
+  const roleDefault = ROLE_DEFAULT;
+  if (roleDefault == role) return true;
   const super_admin = "admin";
-  const roles = useUserStore().roles
+  const roles = useUserStore().roles;
   if (role && role.length > 0) {
     return roles.some(v => {
       return super_admin === v || v === role

@@ -6,3 +6,6 @@ export const COPYRIGHT_INFO = `Copyright @ 2023-${new Date().getFullYear()} ${VI
 export const PREFIX_FIELD = 'vue3-system';
 // Token 令牌key
 export const TOKEN_NAME = `${PREFIX_FIELD}-token`;
+
+// 系统默认角色
+export const ROLE_DEFAULT = 'ROLE_DEFAULT'

@@ -1,31 +1,25 @@
 import Layout from '@/layout/index.vue';
+import { ROLE_DEFAULT } from "@/config/global";
 
+// 静态路由
 export default [
   {
-    path: '',
+    path: '/generator',
     component: Layout,
-    redirect: '/index',
+    name: 'Generator',
+    redirect: 'noRedirect',
+    meta: { title: '代码生成器', icon: 'code', noCache: false },
+    roles: [ROLE_DEFAULT],
+    hidden: false,
+    alwaysShow: true,
     children: [
       {
-        path: '/index',
-        component: () => import('@/views/index.vue'),
-        name: 'Index',
-        meta: { title: '首页', icon: 'dashboard', affix: true }
+        path: 'baseClass',
+        component: () => import('@/views/generator/baseClass/index.vue'),
+        name: 'BaseClass',
+        meta: { title: '基类管理', icon: 'class', noCache: false, affix: false },
+        hidden: false,
       }
     ]
   },
-  {
-    path: '/user',
-    component: Layout,
-    hidden: true,
-    redirect: 'noredirect',
-    children: [
-      {
-        path: 'profile',
-        component: () => import('@/views/system/user/profile/index.vue'),
-        name: 'Profile',
-        meta: { title: '个人中心', icon: 'user' }
-      }
-    ]
-  }
 ] as LayoutRoutes[]

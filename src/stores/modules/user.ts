@@ -2,6 +2,7 @@ import { login } from '@/api/login'
 import defAva from '@/assets/images/profile.jpg'
 import { CookiesUtils } from "@/utils/request/utils/Cookies";
 import { RequestHooks } from "@/hooks";
+import { ROLE_DEFAULT } from "@/config/global";
 
 const useRequest = RequestHooks();
 
@@ -36,7 +37,7 @@ const useUserStore = defineStore('user', {
         const info: Record<string, any> = {
           name: '游客登录',
           avatar: '@/assets/images/kdy.jpg',
-          roles: ['ROLE_DEFAULT'],
+          roles: [ROLE_DEFAULT],
           permissions: [],
         };
         if (true) {

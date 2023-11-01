@@ -6,19 +6,24 @@ const modules: Record<string, any> = import.meta.glob('./modules/**/*.ts', { eag
 // 动态路由，基于用户权限动态去加载
 export const dynamicRoutes: LayoutRoutes[] = [];
 
+// 系统工具页 如：首页、个人中心、401等
 export const constantRoutes: LayoutRoutes[] = [];
 
+// 静态路由页面
 export const baseRoutes: LayoutRoutes[] = [];
 
 Object.keys(modules).forEach((key) => {
   const mod = modules[key].default || {};
   const modList = Array.isArray(mod) ? [...mod] : [mod];
-  if (key === './modules/Base.ts') {
-    baseRoutes.push(...modList);
-  } else if (key === './modules/Dynamic.ts') {
-    dynamicRoutes.push(...modList);
-  } else {
-    constantRoutes.push(...modList);
+  const keyArray = key.match(/(?<=\/)[^/]+(?=\.ts$)/);
+  if (keyArray) {
+    if (keyArray[0] === 'Component' || keyArray[0] === 'Fixed') {
+      constantRoutes.push(...modList);
+    } else if (keyArray[0] === 'Dynamic') {
+      dynamicRoutes.push(...modList);
+    } else {
+      baseRoutes.push(...modList);
+    }
   }
 });
 

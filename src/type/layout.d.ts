@@ -109,8 +109,8 @@ declare global {
     /** 设置该路由的图标，对应路径src/assets/icons/svg */
     icon?: string,
     /** 如果设置为false，则不会在breadcrumb面包屑中显示 */
-    breadcrumb?: string,
-    /** 当路由设置了该属性，则会高亮相对应的侧边栏。 */
+    breadcrumb?: boolean,
+    /** 当路由设置了该属性，则会高亮相对应的侧边栏。 值：高了的路由地址 */
     activeMenu?: string,
     /** tab标签是否固定 */
     affix?: boolean,
