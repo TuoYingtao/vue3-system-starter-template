@@ -9,3 +9,6 @@ export const TOKEN_NAME = `${PREFIX_FIELD}-token`;
 
 // 系统默认角色
 export const ROLE_DEFAULT = 'ROLE_DEFAULT'
+
+// 需要登录吗 true-需要登录 false-不需要登录
+export const IS_TOKEN_AUTH = false
