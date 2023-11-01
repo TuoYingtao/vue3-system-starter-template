@@ -2,7 +2,7 @@ import { defineComponent, Ref } from 'vue';
 import { ElMenuItem, ElSubMenu } from 'element-plus';
 
 import AppLink from './Link.vue';
-import SvgIcon from "@/components/framework/SvgIcon/index.vue";
+import SvgIcon from "@/components/Framework/SvgIcon/index.vue";
 import SidebarItem from './SidebarItem';
 
 import { isExternal } from '@/utils/validate';

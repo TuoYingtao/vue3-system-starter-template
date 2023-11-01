@@ -7,13 +7,13 @@ import useUserStore from '@/stores/modules/user'
 import useSettingsStore from '@/stores/modules/settings'
 
 import './index.scss';
-import Breadcrumb from '@/components/framework/layout/Breadcrumb/index'
-import TopNav from '@/components/framework/layout/TopNav/index.vue'
-import Hamburger from '@/components/framework/layout/Hamburger/index.vue'
-import Screenfull from '@/components/framework/layout/Screenfull/index.vue'
-import SizeSelect from '@/components/framework/layout/SizeSelect/index.vue'
-import HeaderSearch from '@/components/framework/layout/HeaderSearch/index'
-import SvgIcon from "@/components/framework/SvgIcon/index.vue";
+import Breadcrumb from '@/components/Framework/layout/Breadcrumb/index'
+import TopNav from '@/components/Framework/layout/TopNav/index.vue'
+import Hamburger from '@/components/Framework/layout/Hamburger/index.vue'
+import Screenfull from '@/components/Framework/layout/Screenfull/index.vue'
+import SizeSelect from '@/components/Framework/layout/SizeSelect/index.vue'
+import HeaderSearch from '@/components/Framework/layout/HeaderSearch/index'
+import SvgIcon from "@/components/Framework/SvgIcon/index.vue";
 
 export default defineComponent({
   name: 'Navbar',

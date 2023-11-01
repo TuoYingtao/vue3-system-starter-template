@@ -5,7 +5,7 @@ import HasRole from '@/directive/permission/HasRole';
 import Debounce from '@/directive/common/Debounce';
 import Throttle from '@/directive/common/Throttle';
 import Hide from '@/directive/common/Hide';
-import copyText from "@/directive/common/copyText";
+import copyText from "@/directive/common/CopyText";
 
 export default {
   /**

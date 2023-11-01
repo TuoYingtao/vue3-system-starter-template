@@ -2,7 +2,7 @@ import auth from "@/plugins/auth";
 import router, { baseRoutes, constantRoutes, dynamicRoutes } from '@/router'
 import { getRouters } from '@/api/menu'
 import Layout from '@/layout/index.vue'
-import ParentView from '@/components/framework/ParentView/index.vue'
+import ParentView from '@/components/Framework/ParentView/index.vue'
 import InnerLink from '@/layout/components/InnerLink/index.vue'
 import { RouteRecordRaw } from "vue-router";
 

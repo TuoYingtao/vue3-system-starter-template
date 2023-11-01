@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import iFrame from '@/components/framework/iFrame/index.vue'
+import iFrame from '@/components/Framework/iFrame/index.vue'
 
 import { ref } from 'vue';
 

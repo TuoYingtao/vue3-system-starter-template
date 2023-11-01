@@ -2,7 +2,7 @@ import { ElInput } from "element-plus";
 import { defineComponent } from "vue";
 import icons from './requireIcons'
 import { IconSelect } from "./requireIcons";
-import SvgIcon from "@/components/framework/SvgIcon/index.vue";
+import SvgIcon from "@/components/Framework/SvgIcon/index.vue";
 
 import './index.scss'
 

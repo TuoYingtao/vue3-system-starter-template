@@ -12,8 +12,8 @@ import directive from './directive';
 import plugins from './plugins';
 import './permission'; // permission control
 
-import { useVueViewer } from "@/components/framework/VueViewer";
-import elementIcons from '@/components/framework/SvgIcon/svgIcon.js';
+import { useVueViewer } from "@/components/Framework/VueViewer";
+import elementIcons from '@/components/Framework/SvgIcon/svgIcon.js';
 
 import { download } from '@/utils/request';
 import { useDict } from '@/utils/dict';
