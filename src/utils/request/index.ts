@@ -16,8 +16,8 @@ export const config: IAxiosRequestConfig = merge(<AxiosOptionsConfigImpl> new Ax
   transform: new AxiosTransformImpl(),
   requestOptions: {
     apiUrl: host,
-    isJoinPrefix: false,
-    urlPrefix: AxiosConstants.AxiosUrlPrefixEnum.SYSTEM,
+    isJoinPrefix: true,
+    urlPrefix: AxiosConstants.AxiosUrlPrefixEnum.DEFAULT,
     isReturnNativeResponse: false,
     isTransformResponse: true,
     joinParamsToUrl: false,

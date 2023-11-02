@@ -9,6 +9,7 @@ export const CacheConstants = {
 }
 
 export enum AxiosUrlPrefixEnum {
+  DEFAULT = '/generator',
   SYSTEM = '/system',
   ADMIN = '/admin',
 }

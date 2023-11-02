@@ -6,7 +6,7 @@ import { isHttp } from '@/utils/validate'
 import useUserStore from '@/stores/modules/user'
 import useSettingsStore from '@/stores/modules/settings'
 import usePermissionStore from '@/stores/modules/permission'
-import { NavigationGuardNext, RouteLocationNormalized, RouteRecordRaw } from "vue-router";
+import { RouteRecordRaw } from "vue-router";
 import { CookiesUtils } from "@/utils/request/utils/Cookies";
 import { IS_TOKEN_AUTH } from "@/config/global";
 
@@ -14,32 +14,8 @@ NProgress.configure({ showSpinner: false });
 
 const whiteList = ['/login', '/register'];
 
-function initUserInfoAndRouter(next: NavigationGuardNext, to: RouteLocationNormalized) {
-  // 判断当前用户是否已拉取完user_info信息
-  useUserStore().getInfo().then((info: any) => {
-    usePermissionStore().generateRoutes(info.roles).then(accessRoutes => {
-      // 根据roles权限生成可访问的路由表
-      accessRoutes.forEach(route => {
-        if (!isHttp(route.path)) {
-          router.addRoute(route as RouteRecordRaw) // 动态添加可访问路由表
-        }
-      })
-      next({...to, replace: true}) // hack方法 确保addRoutes已完成
-    })
-  }).catch(err => {
-    useUserStore().logOut().then(() => {
-      ElMessage.error(err)
-      next({path: '/'})
-    })
-  })
-}
-
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   NProgress.start()
-  if (!IS_TOKEN_AUTH) {
-    initUserInfoAndRouter(next, to);
-    next();
-  }
   if (CookiesUtils.get()) {
     to.meta.title && useSettingsStore().setTitle(to.meta.title as string)
     /* has token*/
@@ -47,8 +23,31 @@ router.beforeEach((to, from, next) => {
       next({ path: '/' })
       NProgress.done()
     } else {
-      if (useUserStore().roles.length === 0) {
-        initUserInfoAndRouter(next, to);
+      if (useUserStore().roles.length === 1) {
+        try { // 判断当前用户是否已拉取完user_info信息
+          let roles: string[] = useUserStore().roles;
+          let cd: any = null;
+          if (IS_TOKEN_AUTH) {
+            const info: any = await useUserStore().getInfo();
+            roles = info.roles;
+            cd = { ...to, replace: true };
+          }
+          // TODO 静态路由 页面刷新丢失Store问题
+          usePermissionStore().generateRoutes(roles).then(accessRoutes => {
+            // 根据roles权限生成可访问的路由表
+            accessRoutes.forEach(route => {
+              if (!isHttp(route.path)) {
+                router.addRoute(route as RouteRecordRaw) // 动态添加可访问路由表
+              }
+            })
+            next(cd) // hack方法 确保addRoutes已完成
+          })
+        } catch (err: any) {
+          useUserStore().logOut().then(() => {
+            ElMessage.error(err)
+            next({path: '/'})
+          })
+        }
       } else {
         next()
       }

@@ -12,9 +12,9 @@ declare global {
   /** 分页 */
   interface PageInfo {
     /** 总页数 */
-    total: number;
+    totalCount: number;
     /** 当前页数 */
-    currentPage: number;
+    currPage: number;
     /** 上一页 */
     prePage: number;
     /** 下一页 */
@@ -39,7 +39,7 @@ declare global {
   /** 响应实体 */
   interface Result<T extends typeof Entity = Entity> {
     code: number;
-    result: T;
+    data: T;
     msg: string;
   }
 

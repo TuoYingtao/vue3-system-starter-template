@@ -2,7 +2,7 @@ import { login } from '@/api/login'
 import defAva from '@/assets/images/profile.jpg'
 import { CookiesUtils } from "@/utils/request/utils/Cookies";
 import { RequestHooks } from "@/hooks";
-import { IS_TOKEN_AUTH, ROLE_DEFAULT } from "@/config/global";
+import { ROLE_DEFAULT } from "@/config/global";
 
 import avatarImage from '@/assets/images/kdy.jpg';
 
@@ -11,9 +11,9 @@ const useRequest = RequestHooks();
 const useUserStore = defineStore('user', {
   state: () => ({
     token: CookiesUtils.get(),
-    name: '',
-    avatar: '',
-    roles: [] as string[],
+    name: '游客登录',
+    avatar: avatarImage,
+    roles: [ROLE_DEFAULT] as string[],
     permissions: []
   } as User),
   actions: {
@@ -36,32 +36,20 @@ const useUserStore = defineStore('user', {
     // 获取用户信息
     getInfo() {
       return new Promise(async (resolve, reject) => {
-        const info: Record<string, any> = {
-          name: '游客登录',
-          avatar: avatarImage,
-          roles: [ROLE_DEFAULT],
-          permissions: [],
-        };
-        if (IS_TOKEN_AUTH) {
-          await useRequest.getInfoFun(function (res: Record<string, any>) {
-            const user = res.user
-            const avatar = (user.avatar == "" || user.avatar == null) ? defAva : import.meta.env.VITE_APP_BASE_API + user.avatar;
-            if (res.roles && res.roles.length > 0) { // 验证返回的roles是否是一个非空数组
-              info.roles.push(...res.roles);
-              info.permissions = res.permissions
-            }
-            info.name = user.userName
-            info.avatar = avatar;
-            resolve(info)
-          }, function (error: Error) {
-            reject(error);
-          });
-        }
-        this.name = info.name;
-        this.avatar = info.avatar;
-        this.roles = info.roles;
-        this.permissions = info.permissions;
-        resolve(info)
+        const that = this;
+        await useRequest.getInfoFun(function (res: Record<string, any>) {
+          const user = res.user
+          const avatar = (user.avatar == "" || user.avatar == null) ? defAva : import.meta.env.VITE_APP_BASE_API + user.avatar;
+          if (res.roles && res.roles.length > 0) { // 验证返回的roles是否是一个非空数组
+            that.roles.push(...res.roles);
+            that.permissions = res.permissions
+          }
+          that.name = user.userName
+          that.avatar = avatar;
+          resolve(res.user)
+        }, function (error: Error) {
+          reject(error);
+        });
       })
     },
     // 退出系统

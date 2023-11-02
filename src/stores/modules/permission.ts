@@ -31,7 +31,7 @@ const usePermissionStore = defineStore('permission', {
     setSidebarRouters(routes: LayoutRoutes[]) {
       this.sidebarRouters = routes
     },
-    generateRoutes(roles?: string): Promise<LayoutRoutes[]> {
+    generateRoutes(roles?: string[]): Promise<LayoutRoutes[]> {
       const routersInfo: Record<string, LayoutRoutes[]> = {
         defaultRoutes: [],
         rewriteRoutes: [],
