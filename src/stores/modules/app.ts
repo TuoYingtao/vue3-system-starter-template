@@ -4,6 +4,15 @@ import Cookies from 'js-cookie'
 const sidebarStatus = Cookies.get('sidebarStatus');
 
 const useAppStore = defineStore('app', {
+  persist: { // 本地持久化
+    enabled: true,
+    strategies: [
+      {
+        key: "app-storage",
+        storage: sessionStorage,
+      },
+    ],
+  },
   state: () => ({
     sidebar: {
       opened: sidebarStatus ? !!+sidebarStatus : true,

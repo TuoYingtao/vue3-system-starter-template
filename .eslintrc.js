@@ -17,7 +17,7 @@ module.exports = {
   },
   extends: [
     'eslint:recommended',
-    // 'plugin:vue/recommended',
+    'plugin:vue/recommended',
     'plugin:vue/strongly-recommended',
     '@vue/typescript/recommended',
     "@vue/eslint-config-typescript",
@@ -37,10 +37,10 @@ module.exports = {
   //it is base on https://github.com/vuejs/eslint-config-vue
   rules: {
     "vue/max-attributes-per-line": [2, {
-      "singleline": 10,
+      "singleline": 10, // 单行最大属性数量
       "multiline": {
-        "max": 1,
-        "allowFirstLine": false
+        "max": 1, // 多行模式下每行的最大属性数量
+        "allowFirstLine": false  // 是否允许第一个属性与标签同行
       }
     }],
     "vue/singleline-html-element-content-newline": "off",

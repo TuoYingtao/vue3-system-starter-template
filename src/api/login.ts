@@ -19,7 +19,7 @@ export function login(username, password, code, uuid) {
 }
 
 // 注册方法
-export function register(data) {
+export function register(data:) {
   return request({
     url: '/register',
     headers: {
@@ -39,7 +39,7 @@ export function getInfo() {
 }
 
 // 退出方法
-export function logout(token) {
+export function logout(token: string) {
   return request({
     url: '/logout',
     method: 'post'

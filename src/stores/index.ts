@@ -1,4 +1,6 @@
-const store = createPinia()
+import piniaPersist from 'pinia-plugin-persist'
+const store = createPinia();
+store.use(piniaPersist);
 
 export * from './modules/app';
 export * from './modules/dict';

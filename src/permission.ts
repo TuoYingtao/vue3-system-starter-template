@@ -6,6 +6,7 @@ import { isHttp } from '@/utils/validate'
 import useUserStore from '@/stores/modules/user'
 import useSettingsStore from '@/stores/modules/settings'
 import usePermissionStore from '@/stores/modules/permission'
+import useAppStore from '@/stores/modules/app'
 import { RouteRecordRaw } from "vue-router";
 import { CookiesUtils } from "@/utils/request/utils/Cookies";
 import { IS_TOKEN_AUTH } from "@/config/global";
@@ -14,8 +15,14 @@ NProgress.configure({ showSpinner: false });
 
 const whiteList = ['/login', '/register'];
 
+function initStorage() {
+  // 持久化初始加载
+  useAppStore();
+}
+
 router.beforeEach(async (to, from, next) => {
-  NProgress.start()
+  initStorage();
+  NProgress.start();
   if (CookiesUtils.get() || !IS_TOKEN_AUTH) {
     to.meta.title && useSettingsStore().setTitle(to.meta.title as string)
     /* has token*/
