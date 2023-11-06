@@ -13,6 +13,7 @@ export default (app: App<Element>) => {
     mounted(el: any, binding: DirectiveBinding) {
       const { value } = binding
       const super_admin = "admin";
+      if (value.includes(super_admin)) return true;
       const roles = useUserStore().roles
       if (value && value instanceof Array && value.length > 0) {
         const roleFlag = value

@@ -13,6 +13,7 @@ export default (app: App<Element>) => {
     mounted(el: any, binding: DirectiveBinding) {
       const { value } = binding
       const all_permission = "*:*:*";
+      if (value.includes(all_permission)) return true;
       const permissions = useUserStore().permissions
       if (value && value instanceof Array && value.length > 0) {
         const permissionFlag = value

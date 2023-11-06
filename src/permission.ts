@@ -16,7 +16,7 @@ const whiteList = ['/login', '/register'];
 
 router.beforeEach(async (to, from, next) => {
   NProgress.start()
-  if (CookiesUtils.get()) {
+  if (CookiesUtils.get() || !IS_TOKEN_AUTH) {
     to.meta.title && useSettingsStore().setTitle(to.meta.title as string)
     /* has token*/
     if (to.path === '/login') {
@@ -26,13 +26,10 @@ router.beforeEach(async (to, from, next) => {
       if (useUserStore().roles.length === 1) {
         try { // 判断当前用户是否已拉取完user_info信息
           let roles: string[] = useUserStore().roles;
-          let cd: any = null;
           if (IS_TOKEN_AUTH) {
             const info: any = await useUserStore().getInfo();
             roles = info.roles;
-            cd = { ...to, replace: true };
           }
-          // TODO 静态路由 页面刷新丢失Store问题
           usePermissionStore().generateRoutes(roles).then(accessRoutes => {
             // 根据roles权限生成可访问的路由表
             accessRoutes.forEach(route => {
@@ -40,7 +37,11 @@ router.beforeEach(async (to, from, next) => {
                 router.addRoute(route as RouteRecordRaw) // 动态添加可访问路由表
               }
             })
-            next(cd) // hack方法 确保addRoutes已完成
+            if (!router.hasRoute(to.name!)) {
+              next({ ...to, replace: true }); // hack方法 确保addRoutes已完成
+            } else {
+              next();
+            }
           })
         } catch (err: any) {
           useUserStore().logOut().then(() => {

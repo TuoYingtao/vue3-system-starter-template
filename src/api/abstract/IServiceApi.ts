@@ -4,49 +4,67 @@
  * @Author: TuoYingtao
  * @Date: 2023-11-02 14:45:33
  * @Version: v1.0.0
-*/
+ */
+
+const RESULT = { msg: '', code: '', data: [] } as unknown;
+
 export abstract class IServiceApi<T extends BaseEntity, L extends BaseEntityList<T>> {
 
   /**
    * 列表
    * @param param
    */
-  abstract list(param: Params): Promise<Result<T[]>>;
+  list(param: Params): Promise<Result<T[]>> {
+    return Promise.resolve<Result<T[]>>(RESULT as Result<T[]>);
+  }
 
   /**
    * 分页
    * @param param
    */
-  abstract page(param: Params): Promise<Result<L>>;
+  page(param: Params): Promise<Result<L>> {
+    return Promise.resolve<Result<L>>(RESULT as Result<L>);
+  }
 
   /**
    * 详情
    * @param id
    */
-  abstract detail(id: Params): Promise<Result<T>>;
+  detail(id: Params): Promise<Result<T>> {
+    return Promise.resolve<Result<T>>(RESULT as Result<T>);
+  }
 
   /**
    * 保存
    * @param entity
    */
-  abstract save(entity: T): Promise<Result<T>>;
+  save(entity: T): Promise<Result<T>> {
+    return Promise.resolve<Result<T>>(RESULT as Result<T>);
+  }
 
   /**
    * 修改
    * @param entity
    */
-  abstract put(entity: T): Promise<Result<T>>;
+  update(entity: T): Promise<Result<T>> {
+    return Promise.resolve<Result<T>>(RESULT as Result<T>);
+  }
 
   /**
    * 删除
    * @param id
    */
-  abstract delete(id: Params): Promise<Result>;
+  delete(id: Params): Promise<Result> {
+    return Promise.resolve<Result>(RESULT as Result);
+  }
 
   /**
    * 排序
    * @param id
    * @param param
    */
-  abstract sort(id: Params, param: Params): Promise<Result>;
+  sort(id: Params, param: Params): Promise<Result> {
+    return Promise.resolve<Result>(RESULT as Result);
+  }
+
 }

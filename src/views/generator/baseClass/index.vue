@@ -44,7 +44,7 @@
             icon="Edit"
             :disabled="single"
             @click="handleUpdate"
-            v-hasPermi="['system:config:edit']"
+            v-hasPermi="['*:*:*']"
         >修改
         </el-button>
       </el-col>
@@ -55,7 +55,7 @@
             icon="Delete"
             :disabled="multiple"
             @click="handleDelete"
-            v-hasPermi="['system:config:remove']"
+            v-hasPermi="['*:*:*']"
         >删除
         </el-button>
       </el-col>
@@ -64,10 +64,9 @@
     <!--  表格数据  -->
     <el-table v-loading="loading" :data="dataList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center"/>
-      <el-table-column label="参数主键" align="center" prop="configId"/>
-      <el-table-column label="参数名称" align="center" prop="configName" :show-overflow-tooltip="true"/>
-      <el-table-column label="参数键名" align="center" prop="configKey" :show-overflow-tooltip="true"/>
-      <el-table-column label="参数键值" align="center" prop="configValue" :show-overflow-tooltip="true"/>
+      <el-table-column label="基类编码" align="center" prop="code"/>
+      <el-table-column label="字段" align="center" prop="fields" :show-overflow-tooltip="true"/>
+      <el-table-column label="包名" align="center" prop="packageName" :show-overflow-tooltip="true"/>
       <el-table-column label="备注" align="center" prop="remark" :show-overflow-tooltip="true"/>
       <el-table-column label="创建时间" align="center" prop="createTime" width="180">
         <template #default="scope">
@@ -77,10 +76,10 @@
       <el-table-column label="操作" align="center" width="150" class-name="small-padding fixed-width">
         <template #default="scope">
           <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)"
-                     v-hasPermi="['system:config:edit']">修改
+                     v-hasPermi="['*:*:*']">修改
           </el-button>
           <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)"
-                     v-hasPermi="['system:config:remove']">删除
+                     v-hasPermi="['*:*:*']">删除
           </el-button>
         </template>
       </el-table-column>
@@ -96,17 +95,25 @@
     <!-- 添加或修改参数配置对话框 -->
     <el-dialog :title="title" v-model="open" width="500px" append-to-body>
       <el-form ref="FormRef" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="参数名称" prop="configName">
-          <el-input v-model="form.configName" placeholder="请输入参数名称" />
+        <el-form-item label="基类编码" prop="code">
+          <el-tooltip class="box-item" effect="dark" content="基类编码" placement="top">
+            <el-input v-model="form.code" placeholder="请输入基类编码" />
+          </el-tooltip>
         </el-form-item>
-        <el-form-item label="参数键名" prop="configKey">
-          <el-input v-model="form.configKey" placeholder="请输入参数键名" />
+        <el-form-item label="字段" prop="fields">
+          <el-tooltip class="box-item" effect="dark" content="基类的成员属性,属性与属性之间用英文逗号分隔（,）" placement="top">
+            <el-input v-model="form.fields" placeholder="请输入字段" />
+          </el-tooltip>
         </el-form-item>
-        <el-form-item label="参数键值" prop="configValue">
-          <el-input v-model="form.configValue" placeholder="请输入参数键值" />
+        <el-form-item label="包名" prop="packageName">
+          <el-tooltip class="box-item" effect="dark" content="基类所在的包名路径" placement="top">
+            <el-input v-model="form.packageName" placeholder="请输入包名" />
+          </el-tooltip>
         </el-form-item>
         <el-form-item label="备注" prop="remark">
-          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
+          <el-tooltip class="box-item" effect="dark" content="备注" placement="top">
+            <el-input v-model="form.remark" type="textarea" placeholder="请输入备注" />
+          </el-tooltip>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -122,14 +129,10 @@
 <script setup lang="ts" name="BaseClass">
 import * as CurrentConstants from "@/views/generator/baseClass/constants";
 import { parseTime } from "@/utils";
-import {
-  baseClassDeleteApi,
-  baseClassDetailApi,
-  baseClassPageApi,
-  baseClassPutApi,
-  baseClassSaveApi
-} from "@/api/generator/baseClass";
 import { BaseClassEntity } from "@/api/generator/models/BaseClassEntity";
+import { getCurrentInstance } from "vue";
+import { BaseClassApiService } from "@/api/generator/BaseClassApiService";
+import { ServiceDecorator } from "@/api/abstract/ServiceDecorator";
 
 // @ts-ignore
 const { proxy } = getCurrentInstance();
@@ -157,6 +160,8 @@ const open = ref(false);
 // 弹窗标题
 const title = ref("");
 
+const serviceApi = new ServiceDecorator(new BaseClassApiService());
+
 onMounted(() => {
   getDataList();
 })
@@ -165,7 +170,7 @@ onMounted(() => {
 async function getDataList() {
   loading.value = true;
   try {
-    const {data} = await baseClassPageApi(proxy.addDateRange(queryParams.value, dateRange.value));
+    const { data } = await serviceApi.page(proxy.addDateRange(queryParams.value, dateRange.value));
     dataList.value = data.list;
     total.value = data.totalCount;
   } catch (e: any) {
@@ -179,7 +184,7 @@ async function getDataList() {
 function handleAdd() {
   reset();
   open.value = true;
-  title.value = "添加参数";
+  title.value = "添加基类";
 }
 
 /** 修改按钮操作 */
@@ -187,10 +192,10 @@ async function handleUpdate(row: BaseClassEntity) {
   reset();
   const params = row.id || ids.value;
   try {
-    const {data} = await baseClassDetailApi(params);
+    const { data } = await serviceApi.detail(params);
     form.value = data;
     open.value = true;
-    title.value = "修改参数";
+    title.value = "修改基类";
   } catch (e: any) {
     proxy.$modal.msgError(e.message);
   }
@@ -199,8 +204,8 @@ async function handleUpdate(row: BaseClassEntity) {
 /** 删除按钮操作 */
 function handleDelete(row: BaseClassEntity) {
   const params = row.id || ids.value;
-  proxy.$modal.confirm('是否确认删除参数编号为"' + params + '"的数据项？').then(function () {
-    return baseClassDeleteApi(params);
+  proxy.$modal.confirm('是否确认删除编号为"' + params + '"的数据项？').then(function () {
+    return serviceApi.delete(params);
   }).then(() => {
     getDataList();
     proxy.$modal.msgSuccess("删除成功");
@@ -219,10 +224,10 @@ function submitForm() {
     try {
       if (valid) {
         if (form.value.id != undefined) {
-          const { data } = await baseClassPutApi(form.value);
+          const { data } = await serviceApi.update(form.value);
           callBack("修改成功");
         } else {
-          await baseClassSaveApi(form.value);
+          await serviceApi.save(form.value);
           callBack("新增成功");
         }
       }
@@ -262,13 +267,7 @@ function handleSelectionChange(selection: BaseClassEntity[]) {
 
 /** 表单重置 */
 function reset() {
-  form.value = {
-    id: 0,
-    packageName: '',
-    code: '',
-    fields: '',
-    remark: '',
-  };
+  form.value = CurrentConstants.DEFAULT_FORM;
   proxy.resetForm("FormRef");
 }
 </script>

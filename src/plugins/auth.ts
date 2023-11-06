@@ -3,7 +3,6 @@ import { ROLE_DEFAULT } from "@/config/global";
 
 function authPermission(permission: string) {
   const all_permission = "*:*:*";
-  console.log(permission)
   if (permission == all_permission) return false;
   const permissions = useUserStore().permissions
   if (permission && permission.length > 0) {
@@ -32,7 +31,6 @@ function authRole(role: string) {
 export default {
   // 验证用户是否具备某权限
   hasPermi(permission: string) {
-    console.log(permission)
     return authPermission(permission);
   },
   // 验证用户是否含有指定权限，只需包含其中一个
