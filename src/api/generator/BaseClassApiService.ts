@@ -37,5 +37,4 @@ export class BaseClassApiService extends IServiceApi<BaseClassEntity, BaseClassE
       params: entity,
     });
   }
-
 }

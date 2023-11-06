@@ -75,12 +75,8 @@
       </el-table-column>
       <el-table-column label="操作" align="center" width="150" class-name="small-padding fixed-width">
         <template #default="scope">
-          <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)"
-                     v-hasPermi="['*:*:*']">修改
-          </el-button>
-          <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)"
-                     v-hasPermi="['*:*:*']">删除
-          </el-button>
+          <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['*:*:*']">修改</el-button>
+          <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['*:*:*']">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -92,38 +88,9 @@
         v-model:limit="queryParams.pageSize"
         @pagination="getDataList"
     />
-    <!-- 添加或修改参数配置对话框 -->
-    <el-dialog :title="title" v-model="open" width="500px" append-to-body>
-      <el-form ref="FormRef" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="基类编码" prop="code">
-          <el-tooltip class="box-item" effect="dark" content="基类编码" placement="top">
-            <el-input v-model="form.code" placeholder="请输入基类编码" />
-          </el-tooltip>
-        </el-form-item>
-        <el-form-item label="字段" prop="fields">
-          <el-tooltip class="box-item" effect="dark" content="基类的成员属性,属性与属性之间用英文逗号分隔（,）" placement="top">
-            <el-input v-model="form.fields" placeholder="请输入字段" />
-          </el-tooltip>
-        </el-form-item>
-        <el-form-item label="包名" prop="packageName">
-          <el-tooltip class="box-item" effect="dark" content="基类所在的包名路径" placement="top">
-            <el-input v-model="form.packageName" placeholder="请输入包名" />
-          </el-tooltip>
-        </el-form-item>
-        <el-form-item label="备注" prop="remark">
-          <el-tooltip class="box-item" effect="dark" content="备注" placement="top">
-            <el-input v-model="form.remark" type="textarea" placeholder="请输入备注" />
-          </el-tooltip>
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <div class="dialog-footer">
-          <el-button type="primary" @click="submitForm">确 定</el-button>
-          <el-button @click="cancel">取 消</el-button>
-        </div>
-      </template>
-    </el-dialog>
   </div>
+  <!-- 添加或修改参数配置对话框 -->
+  <form-dialog ref="FormDialogRef" :title="title" :form-data="form" @onAmendSubmitForm="onAmendSubmitForm" @onSaveSubmitForm="onSaveSubmitForm" />
 </template>
 
 <script setup lang="ts" name="BaseClass">
@@ -133,7 +100,10 @@ import { BaseClassEntity } from "@/api/generator/models/BaseClassEntity";
 import { getCurrentInstance } from "vue";
 import { BaseClassApiService } from "@/api/generator/BaseClassApiService";
 import { ServiceDecorator } from "@/api/abstract/ServiceDecorator";
+import FormDialog from "@/views/generator/baseClass/FormDialog.vue";
 
+// 弹窗 Ref
+const FormDialogRef = ref();
 // @ts-ignore
 const { proxy } = getCurrentInstance();
 // data 数据
@@ -155,8 +125,6 @@ const single = ref(true);
 const multiple = ref(true);
 // 批量选中ID
 const ids = ref<number[]>([]);
-// 打开弹窗状态
-const open = ref(false);
 // 弹窗标题
 const title = ref("");
 
@@ -180,27 +148,6 @@ async function getDataList() {
   }
 }
 
-/** 新增按钮操作 */
-function handleAdd() {
-  reset();
-  open.value = true;
-  title.value = "添加基类";
-}
-
-/** 修改按钮操作 */
-async function handleUpdate(row: BaseClassEntity) {
-  reset();
-  const params = row.id || ids.value;
-  try {
-    const { data } = await serviceApi.detail(params);
-    form.value = data;
-    open.value = true;
-    title.value = "修改基类";
-  } catch (e: any) {
-    proxy.$modal.msgError(e.message);
-  }
-}
-
 /** 删除按钮操作 */
 function handleDelete(row: BaseClassEntity) {
   const params = row.id || ids.value;
@@ -213,37 +160,52 @@ function handleDelete(row: BaseClassEntity) {
   });
 }
 
-/** 提交按钮 */
-function submitForm() {
-  let callBack = (message: string) => {
-    proxy.$modal.msgSuccess(message);
-    open.value = false;
-    getDataList();
-  };
-  proxy.$refs["FormRef"].validate(async (valid: boolean) => {
-    try {
-      if (valid) {
-        if (form.value.id != undefined) {
-          const { data } = await serviceApi.update(form.value);
-          callBack("修改成功");
-        } else {
-          await serviceApi.save(form.value);
-          callBack("新增成功");
-        }
-      }
-    } catch (e: any) {
-      proxy.$modal.msgError(e.message);
-    } finally {
-      callBack = () => {};
-    }
-  });
+/** 新增按钮操作 */
+function handleAdd() {
+  FormDialogRef.value.onOpen()
+  title.value = "添加基类";
 }
 
-/** 取消按钮 */
-function cancel() {
-  open.value = false;
-  reset();
+/** 修改按钮操作 */
+async function handleUpdate(row: BaseClassEntity) {
+  const params = row.id || ids.value;
+  try {
+    const { data } = await serviceApi.detail(params);
+    form.value = data;
+    FormDialogRef.value.onOpen()
+    title.value = "修改基类";
+  } catch (e: any) {
+    proxy.$modal.msgError(e.message);
+  }
 }
+
+/**
+ * 修改
+ */
+const onAmendSubmitForm = async (formData: BaseClassEntity) => {
+  try {
+    await serviceApi.update(formData);
+    proxy.$modal.msgSuccess('修改成功');
+    await getDataList();
+    FormDialogRef.value.onClose();
+  } catch (e) {
+    proxy.$modal.msgError(e.message);
+  }
+};
+
+/**
+ * 新增
+ */
+const onSaveSubmitForm = async (formData: BaseClassEntity) => {
+  try {
+    await serviceApi.save(formData);
+    proxy.$modal.msgSuccess('新增成功');
+    await getDataList();
+    FormDialogRef.value.onClose();
+  } catch (e) {
+    proxy.$modal.msgError(e.message);
+  }
+};
 
 /** 搜索按钮操作 */
 function handleQuery() {
@@ -263,12 +225,6 @@ function handleSelectionChange(selection: BaseClassEntity[]) {
   ids.value = selection.map((item: BaseClassEntity) => item.id);
   single.value = selection.length != 1;
   multiple.value = !selection.length;
-}
-
-/** 表单重置 */
-function reset() {
-  form.value = CurrentConstants.DEFAULT_FORM;
-  proxy.resetForm("FormRef");
 }
 </script>
 

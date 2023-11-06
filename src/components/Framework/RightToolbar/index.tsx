@@ -46,6 +46,7 @@ export default defineComponent({
 
     // 刷新
     function refresh() {
+      console.log('刷新')
       emit("queryTable");
     }
 
@@ -79,13 +80,13 @@ export default defineComponent({
 
     const renderRow = () => <ElRow>
       { props.search && <ElTooltip class="item" effect="dark" content={props.showSearch ? '隐藏搜索' : '显示搜索'} placement="top">
-        <el-button circle={true} icon="Search" onClick={() => toggleSearch} />
+        <el-button circle={true} icon="Search" onClick={() => toggleSearch()} />
       </ElTooltip> }
       <ElTooltip class="item" effect="dark" content='刷新' placement="top">
-        <el-button circle={true} icon="Refresh" onClick={() => refresh} />
+        <el-button circle={true} icon="Refresh" onClick={() => refresh()} />
       </ElTooltip>
       {props.columns && <ElTooltip class="item" effect="dark" content='显隐列' placement="top">
-        <el-button circle={true} icon="Menu" onClick={() => showColumn} />
+        <el-button circle={true} icon="Menu" onClick={() => showColumn()} />
       </ElTooltip>}
     </ElRow>
 

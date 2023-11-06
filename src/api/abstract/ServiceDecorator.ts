@@ -1,5 +1,12 @@
 import { IServiceApi } from "@/api/abstract/IServiceApi";
 
+/**
+ * 业务请求装饰器
+ * 用于接口请求功能增强
+ * @Author: TuoYingtao
+ * @Date: 2023-11-06 20:55:38
+ * @Version: v1.0.0
+*/
 export class ServiceDecorator<T extends BaseEntity, L extends BaseEntityList<T>> implements IServiceApi<T, L> {
 
   private service: IServiceApi<T, L>;

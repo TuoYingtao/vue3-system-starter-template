@@ -12,7 +12,7 @@ export const config: IAxiosRequestConfig = merge(<AxiosOptionsConfigImpl> new Ax
   authenticationScheme: AxiosConstants.AuthScheme,
   timeout: 10 * 1000,
   withCredentials: false,
-  headers: { 'Content-Type': AxiosConstants.ContentTypeEnum.FORM_DATA },
+  headers: { 'Content-Type': AxiosConstants.ContentTypeEnum.JSON },
   transform: new AxiosTransformImpl(),
   requestOptions: {
     apiUrl: host,

@@ -7,8 +7,8 @@ interface IData {
   rules: FormRules;
 }
 
-export const DEFAULT_FORM = {
-  id: undefined,
+export const DEFAULT_FORM: BaseClassEntity = {
+  id: -1,
   packageName: '',
   code: '',
   fields: '',
@@ -26,4 +26,9 @@ export const DATA: IData = {
     fields: [{ required: true, message: "字段不能为空", trigger: "blur" }],
     packageName: [{ required: true, message: "包名不能为空", trigger: "blur" }]
   }
+}
+
+export interface Props {
+  title: string;
+  formData: BaseClassEntity;
 }
