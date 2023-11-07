@@ -4,10 +4,10 @@ import request from "@/utils/request/index";
 
 export class BaseClassApiService extends IServiceApi<BaseClassEntity, BaseClassEntityList> {
 
-  delete(id: Params): Promise<Result> {
+  delete(ids: Params): Promise<Result> {
     return request.delete<Result<BaseClassEntity>>({
       url: '/baseclass',
-      params: id,
+      params: ids,
     });
   }
 

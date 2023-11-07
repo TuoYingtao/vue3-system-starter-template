@@ -1,7 +1,7 @@
-export type BaseClassEntityList<T extends typeof BaseEntity = BaseClassEntity > = BaseEntityList<T>;
+export type BaseClassEntityList<T extends typeof BaseEntity = BaseClassEntity> = BaseEntityList<T>;
 
 export interface BaseClassEntity extends BaseEntity {
-  id: number;
+  id?: number;
   packageName: string;
   code: string;
   fields: string;

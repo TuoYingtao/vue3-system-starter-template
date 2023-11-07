@@ -41,12 +41,10 @@ const FormRef = ref();
 const { form, rules } = DATA;
 // 打开弹窗状态
 const open = ref(false);
-const props: Props = withDefaults<Readonly<Props>>(defineProps<Props>(), {
+const props: Props = withDefaults(defineProps<Props>(), {
   title: '',
-  formData: () => ({}),
+  formData: () => DATA.form,
 });
-
-console.log('aa', props);
 
 /**
  * 提交
@@ -54,9 +52,12 @@ console.log('aa', props);
 const submitForm = () => {
   FormRef.value.validate((valid: boolean) => {
     if (valid) {
-      let key = props.formData.id !== -1 ? 'onAmendSubmitForm' : 'onSaveSubmitForm';
-      if (props.formData.id === -1) delete props.formData.id;
-      emit(key, props.formData);
+      const key = props.formData.id !== -1 ? 'onAmendSubmitForm' : 'onSaveSubmitForm';
+      if (props.formData.hasOwnProperty('id') && props.formData.id === -1) {
+        props.formData.id = undefined;
+        props.formData = JSON.parse(JSON.stringify(props.formData));
+      }
+      emit(key as never, props.formData);
     }
   })
 };
@@ -86,6 +87,7 @@ const onClose = () => {
  */
 const resetForm = () => {
   FormRef.value.resetFields();
+  props.formData.id = -1;
 };
 defineExpose({ onOpen, onClose, resetForm })
 </script>

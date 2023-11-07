@@ -100,7 +100,7 @@ import { BaseClassEntity } from "@/api/generator/models/BaseClassEntity";
 import { getCurrentInstance } from "vue";
 import { BaseClassApiService } from "@/api/generator/BaseClassApiService";
 import { ServiceDecorator } from "@/api/abstract/ServiceDecorator";
-import FormDialog from "@/views/generator/baseClass/FormDialog.vue";
+import FormDialog from "@/views/generator/baseClass/component/FormDialog.vue";
 
 // 弹窗 Ref
 const FormDialogRef = ref();
@@ -188,7 +188,7 @@ const onAmendSubmitForm = async (formData: BaseClassEntity) => {
     proxy.$modal.msgSuccess('修改成功');
     await getDataList();
     FormDialogRef.value.onClose();
-  } catch (e) {
+  } catch (e: any) {
     proxy.$modal.msgError(e.message);
   }
 };
@@ -202,7 +202,7 @@ const onSaveSubmitForm = async (formData: BaseClassEntity) => {
     proxy.$modal.msgSuccess('新增成功');
     await getDataList();
     FormDialogRef.value.onClose();
-  } catch (e) {
+  } catch (e: any) {
     proxy.$modal.msgError(e.message);
   }
 };
@@ -222,7 +222,7 @@ function resetQuery() {
 
 /** 多选框选中数据 */
 function handleSelectionChange(selection: BaseClassEntity[]) {
-  ids.value = selection.map((item: BaseClassEntity) => item.id);
+  ids.value = selection.map((item: BaseClassEntity) => item.id!);
   single.value = selection.length != 1;
   multiple.value = !selection.length;
 }

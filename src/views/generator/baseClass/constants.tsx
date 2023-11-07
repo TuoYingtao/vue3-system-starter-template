@@ -19,7 +19,7 @@ export const DATA: IData = {
   form: DEFAULT_FORM,
   queryParams: {
     pageNum: 1,
-    pageSize: 10,
+    limit: 10,
   },
   rules: {
     code: [{ required: true, message: "基类编码不能为空", trigger: "blur" }],
