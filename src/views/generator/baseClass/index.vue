@@ -171,6 +171,7 @@ async function handleUpdate(row: BaseClassEntity) {
   const params = row.id || ids.value;
   try {
     const { data } = await serviceApi.detail(params);
+    if (!data) return proxy.$modal.msgWarning(`未找到[${params}]的数据`);
     form.value = data;
     FormDialogRef.value.onOpen()
     title.value = "修改基类";
