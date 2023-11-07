@@ -14,10 +14,17 @@ export default [
     alwaysShow: true,
     children: [
       {
-        path: 'baseClass',
+        path: 'base-class',
         component: () => import('@/views/generator/baseClass/index.vue'),
         name: 'BaseClass',
         meta: { title: '基类管理', icon: 'class', noCache: true, affix: false },
+        hidden: false,
+      },
+      {
+        path: 'project-modify',
+        component: () => import('@/views/generator/projectModify/index.vue'),
+        name: 'ProjectModify',
+        meta: { title: '项目名变更', icon: 'edit', noCache: true, affix: false },
         hidden: false,
       }
     ]
