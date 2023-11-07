@@ -1,8 +1,8 @@
 <template>
   <section class="app-main">
     <el-config-provider :locale="locale" :size="size" >
-      <router-view v-slot="{ Component, route }">
-        <transition name="fade-transform" mode="out-in">
+      <router-view v-slot="{ Component, route }" >
+        <transition name="fade-transform" :mode="mode">
           <keep-alive :include="tagsViewStore.cachedViews">
             <component v-if="!route.meta.link" :is="Component" :key="route.path"/>
           </keep-alive>
@@ -22,6 +22,11 @@ import useAppStore from '@/stores/modules/app'
 const tagsViewStore = useTagsViewStore()
 
 const size = computed(() => useAppStore().size || 'small');
+
+// 路由中添加key解决切换路由时页面不展示内容，刷新后才展示内容问题
+const mode = computed(() => {
+  return import.meta.env.VITE_APP_ENV === 'production' ? 'out-in' : '';
+});
 </script>
 
 <style lang="scss" scoped>
