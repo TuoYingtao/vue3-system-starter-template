@@ -8,8 +8,6 @@ export interface ProjectModifyEntity extends BaseEntity {
   modifyProjectCode: string;
   modifyProjectPackage: string;
   exclusions: string;
-  modifySuffix: string;
-  modifyTmpPath?: string;
 }
 
 export type ProjectModifyEntityList<T extends typeof BaseEntity = ProjectModifyEntity > = BaseEntityList<T>;

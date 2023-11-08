@@ -26,6 +26,13 @@ export default [
         name: 'ProjectModify',
         meta: { title: '项目名变更', icon: 'edit', noCache: true, affix: false },
         hidden: false,
+      },
+      {
+        path: 'field-type',
+        component: () => import('@/views/generator/fieldType/index.vue'),
+        name: 'FieldType',
+        meta: { title: '字段类型映射', icon: 'list', noCache: true, affix: false },
+        hidden: false,
       }
     ]
   },

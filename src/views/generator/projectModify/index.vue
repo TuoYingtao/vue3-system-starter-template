@@ -31,12 +31,12 @@
         <el-button type="primary" plain icon="Plus" @click="handleAdd" v-hasPermi="['*:*:*']">新增</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="success" plain icon="Edit" :disabled="single" @click="handleUpdate" v-hasPermi="['*:*:*']">
+        <el-button type="success" plain icon="Edit" :disabled="single" @click="handleUpdate()" v-hasPermi="['*:*:*']">
           修改
         </el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="danger" plain icon="Delete" :disabled="multiple" @click="handleDelete" v-hasPermi="['*:*:*']">
+        <el-button type="danger" plain icon="Delete" :disabled="multiple" @click="handleDelete()" v-hasPermi="['*:*:*']">
           删除
         </el-button>
       </el-col>
@@ -59,7 +59,7 @@
           <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['*:*:*']">
             修改
           </el-button>
-          <el-button link type="primary" icon="Download" @click="handleUpdate(scope.row)" v-hasPermi="['*:*:*']">
+          <el-button link type="primary" icon="Download" @click="handleDownload(scope.row)" v-hasPermi="['*:*:*']">
             源码下载
           </el-button>
           <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['*:*:*']">
@@ -85,19 +85,21 @@
       @onAmendSubmitForm="onAmendSubmitForm"
       @onSaveSubmitForm="onSaveSubmitForm"
   />
+  <origin-code-dialog ref="OriginCodeDialogRef" title="源码下载" :form-data="form" @onDownload="onDownload" />
 </template>
 
 <script setup lang="ts" name="ProjectModify">
+import { getCurrentInstance } from "vue";
 import * as CurrentConstants from "@/views/generator/projectModify/constants";
 import { parseTime } from "@/utils";
 import { ProjectModifyEntity } from "@/api/generator/models/ProjectModifyEntity";
-import { getCurrentInstance } from "vue";
-import { ServiceDecorator } from "@/api/abstract/ServiceDecorator";
 import FormDialog from "@/views/generator/projectModify/component/FormDialog.vue";
 import { ProjectModifyApiService } from "@/api/generator/ProjectModifyApiService";
+import OriginCodeDialog from "@/views/generator/projectModify/component/OriginCodeDialog.vue";
 
 // 弹窗 Ref
 const FormDialogRef = ref();
+const OriginCodeDialogRef = ref();
 // @ts-ignore
 const {proxy} = getCurrentInstance();
 // data 数据
@@ -122,7 +124,7 @@ const ids = ref<number[]>([]);
 // 弹窗标题
 const title = ref("");
 
-const serviceApi = new ServiceDecorator(new ProjectModifyApiService());
+const serviceApi = new ProjectModifyApiService();
 
 onMounted(() => {
   getDataList();
@@ -143,8 +145,8 @@ async function getDataList() {
 }
 
 /** 删除按钮操作 */
-function handleDelete(row: ProjectModifyEntity) {
-  const params = row.id || ids.value;
+function handleDelete(row?: ProjectModifyEntity) {
+  const params = row!.id || ids.value;
   proxy.$modal.confirm('是否确认删除编号为"' + params + '"的数据项？').then(function () {
     return serviceApi.delete(params);
   }).then(() => {
@@ -161,22 +163,33 @@ function handleAdd() {
 }
 
 /** 修改按钮操作 */
-async function handleUpdate(row: ProjectModifyEntity) {
-  const params = row.id || ids.value;
+async function handleUpdate(row?: ProjectModifyEntity) {
+  const params = row!.id || ids.value;
   try {
     const {data} = await serviceApi.detail(params);
     if (!data) return proxy.$modal.msgWarning(`未找到[${params}]的数据`);
     form.value = data;
-    FormDialogRef.value.onOpen()
+    FormDialogRef.value.onOpen();
     title.value = "修改项目";
   } catch (e: any) {
     proxy.$modal.msgError(e.message);
   }
 }
 
-/**
- * 修改
- */
+/** 源码下载 */
+const handleDownload = async (row: ProjectModifyEntity) => {
+  const params = row.id || ids.value;
+  try {
+    const {data} = await serviceApi.detail(params);
+    if (!data) return proxy.$modal.msgWarning(`未找到[${params}]的数据`);
+    form.value = data;
+    OriginCodeDialogRef.value.onOpen();
+  } catch (e: any) {
+    proxy.$modal.msgError(e.message);
+  }
+}
+
+/** 修改 */
 const onAmendSubmitForm = async (formData: ProjectModifyEntity) => {
   try {
     await serviceApi.update(formData);
@@ -188,15 +201,23 @@ const onAmendSubmitForm = async (formData: ProjectModifyEntity) => {
   }
 };
 
-/**
- * 新增
- */
+/** 新增 */
 const onSaveSubmitForm = async (formData: ProjectModifyEntity) => {
   try {
     await serviceApi.save(formData);
     proxy.$modal.msgSuccess('新增成功');
     await getDataList();
     FormDialogRef.value.onClose();
+  } catch (e: any) {
+    proxy.$modal.msgError(e.message);
+  }
+};
+
+/** 下载源码 */
+const onDownload = async (formData: ProjectModifyEntity) => {
+  try {
+    await serviceApi.download(formData.id as number);
+    OriginCodeDialogRef.value.onClose();
   } catch (e: any) {
     proxy.$modal.msgError(e.message);
   }

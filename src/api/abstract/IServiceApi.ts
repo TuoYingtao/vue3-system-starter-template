@@ -52,9 +52,9 @@ export abstract class IServiceApi<T extends BaseEntity, L extends BaseEntityList
 
   /**
    * 删除
-   * @param id
+   * @param ids
    */
-  delete(id: Params): Promise<Result> {
+  delete(ids: Params): Promise<Result> {
     return Promise.resolve<Result>(RESULT as Result);
   }
 

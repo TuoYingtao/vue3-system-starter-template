@@ -37,4 +37,10 @@ export class ProjectModifyApiService extends IServiceApi<ProjectModifyEntity, Pr
       params: ids,
     });
   }
+
+  download(id: Params): Promise<Result> {
+    return request.get<Result>({
+      url: `/project/download/${id}`,
+    });
+  }
 }

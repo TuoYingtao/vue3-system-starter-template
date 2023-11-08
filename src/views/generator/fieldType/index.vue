@@ -1,10 +1,19 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="QueryRef" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="基类编码" prop="code">
+      <el-form-item label="字段类型" prop="columnType">
         <el-input
-            v-model="queryParams.code"
-            placeholder="请输入基类编码"
+            v-model="queryParams.columnType"
+            placeholder="请输入字段类型"
+            clearable
+            style="width: 240px"
+            @keyup.enter="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="属性类型" prop="attrType">
+        <el-input
+            v-model="queryParams.attrType"
+            placeholder="请输入属性类型"
             clearable
             style="width: 240px"
             @keyup.enter="handleQuery"
@@ -64,10 +73,9 @@
     <!--  表格数据  -->
     <el-table v-loading="loading" :data="dataList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center"/>
-      <el-table-column label="基类编码" align="center" prop="code"/>
-      <el-table-column label="字段" align="center" prop="fields" :show-overflow-tooltip="true"/>
-      <el-table-column label="包名" align="center" prop="packageName" :show-overflow-tooltip="true"/>
-      <el-table-column label="备注" align="center" prop="remark" :show-overflow-tooltip="true"/>
+      <el-table-column label="字段类型" align="center" prop="columnType"/>
+      <el-table-column label="属性类型" align="center" prop="attrType"/>
+      <el-table-column label="属性包名" align="center" prop="packageName" :show-overflow-tooltip="true"/>
       <el-table-column label="创建时间" align="center" prop="createTime" width="180">
         <template #default="scope">
           <span>{{ parseTime(scope.row.createTime) }}</span>
@@ -95,11 +103,11 @@
 
 <script setup lang="ts" name="BaseClass">
 import { getCurrentInstance } from "vue";
-import * as CurrentConstants from "@/views/generator/baseClass/constants";
+import * as CurrentConstants from "@/views/generator/fieldType/constants";
 import { parseTime } from "@/utils";
-import { BaseClassEntity } from "@/api/generator/models/BaseClassEntity";
-import { BaseClassApiService } from "@/api/generator/BaseClassApiService";
-import FormDialog from "@/views/generator/baseClass/component/FormDialog.vue";
+import FormDialog from "@/views/generator/fieldType/component/FormDialog.vue";
+import { FieldTypeApiService } from "@/api/generator/FieldTypeApiService";
+import { FieldTypeEntity } from "@/api/generator/models/FieldTypeEntity";
 
 // 弹窗 Ref
 const FormDialogRef = ref();
@@ -115,7 +123,7 @@ const showSearch = ref(true);
 // 表格加载动画
 const loading = ref(true);
 // 表格数据
-const dataList = ref<BaseClassEntity[]>([]);
+const dataList = ref<FieldTypeEntity[]>([]);
 // 总条数
 const total = ref(0);
 // 全局修改按钮状态
@@ -127,7 +135,7 @@ const ids = ref<number[]>([]);
 // 弹窗标题
 const title = ref("");
 
-const serviceApi = new BaseClassApiService();
+const serviceApi = new FieldTypeApiService();
 
 onMounted(() => {
   getDataList();
@@ -148,7 +156,7 @@ async function getDataList() {
 }
 
 /** 删除按钮操作 */
-function handleDelete(row?: BaseClassEntity) {
+function handleDelete(row?: FieldTypeEntity) {
   const params = row!.id || ids.value;
   proxy.$modal.confirm('是否确认删除编号为"' + params + '"的数据项？').then(function () {
     return serviceApi.delete(params);
@@ -166,7 +174,7 @@ function handleAdd() {
 }
 
 /** 修改按钮操作 */
-async function handleUpdate(row?: BaseClassEntity) {
+async function handleUpdate(row?: FieldTypeEntity) {
   const params = row!.id || ids.value;
   try {
     const { data } = await serviceApi.detail(params);
@@ -182,7 +190,7 @@ async function handleUpdate(row?: BaseClassEntity) {
 /**
  * 修改
  */
-const onAmendSubmitForm = async (formData: BaseClassEntity) => {
+const onAmendSubmitForm = async (formData: FieldTypeEntity) => {
   try {
     await serviceApi.update(formData);
     proxy.$modal.msgSuccess('修改成功');
@@ -196,7 +204,7 @@ const onAmendSubmitForm = async (formData: BaseClassEntity) => {
 /**
  * 新增
  */
-const onSaveSubmitForm = async (formData: BaseClassEntity) => {
+const onSaveSubmitForm = async (formData: FieldTypeEntity) => {
   try {
     await serviceApi.save(formData);
     proxy.$modal.msgSuccess('新增成功');
@@ -221,8 +229,8 @@ function resetQuery() {
 }
 
 /** 多选框选中数据 */
-function handleSelectionChange(selection: BaseClassEntity[]) {
-  ids.value = selection.map((item: BaseClassEntity) => item.id!);
+function handleSelectionChange(selection: FieldTypeEntity[]) {
+  ids.value = selection.map((item: FieldTypeEntity) => item.id!);
   single.value = selection.length != 1;
   multiple.value = !selection.length;
 }
