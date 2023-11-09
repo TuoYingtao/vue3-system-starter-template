@@ -2,7 +2,7 @@ import { IServiceApi } from "@/api/abstract/IServiceApi";
 import { FieldTypeEntity, FieldTypeEntityList } from "@/api/generator/models/FieldTypeEntity";
 import request from "@/utils/request/index";
 
-export class FieldTypeApiService implements IServiceApi<FieldTypeEntity, FieldTypeEntityList> {
+export class FieldTypeApiService extends IServiceApi<FieldTypeEntity, FieldTypeEntityList> {
 
   delete(ids: Params): Promise<Result> {
     return request.delete<Result>({

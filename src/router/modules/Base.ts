@@ -33,7 +33,21 @@ export default [
         name: 'FieldType',
         meta: { title: '字段类型映射', icon: 'list', noCache: true, affix: false },
         hidden: false,
-      }
+      },
+      {
+        path: 'datasource',
+        component: () => import('@/views/generator/datasource/index.vue'),
+        name: 'Datasource',
+        meta: { title: '数据源管理', icon: 'datasource', noCache: true, affix: false },
+        hidden: false,
+      },
+      {
+        path: 'index',
+        component: () => import('@/views/generator/table/index.vue'),
+        name: 'GeneratorCode',
+        meta: { title: '代码生成', icon: 'table', noCache: true, affix: false },
+        hidden: false,
+      },
     ]
   },
 ] as LayoutRoutes[]

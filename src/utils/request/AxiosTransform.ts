@@ -158,7 +158,6 @@ export class AxiosTransformImpl implements AxiosTransform {
     // 这里逻辑可以根据项目进行修改
     const hasSuccess = res.data && code === 200;
     if (hasSuccess) {
-      console.log('AAAAAAAAAA')
       return res.data;
     }
     throw new Error(`${msg}`);

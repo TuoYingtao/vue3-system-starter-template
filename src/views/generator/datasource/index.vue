@@ -1,14 +1,24 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="QueryRef" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="项目名" prop="projectName">
+    <el-form :model="queryParams" ref="QueryRef" :inline="true" v-show="showSearch" label-width="72px">
+      <el-form-item label="连接名" prop="connName">
         <el-input
-            v-model="queryParams.projectName"
-            placeholder="请输入项目名"
+            v-model="queryParams.connName"
+            placeholder="请输入连接名"
             clearable
             style="width: 240px"
             @keyup.enter="handleQuery"
         />
+      </el-form-item>
+      <el-form-item label="数据库类型" prop="dbType">
+        <el-select
+            v-model="queryParams.dbType"
+            placeholder="请输入数据库类型"
+            clearable
+            style="width: 240px"
+            @keyup.enter="handleQuery">
+          <el-option v-for="item in dbTypeOptions" :key="item.id" :label="item.label" :value="item.label" />
+        </el-select>
       </el-form-item>
       <el-form-item label="创建时间" style="width: 308px;">
         <el-date-picker
@@ -28,7 +38,9 @@
     <!--  表格操作  -->
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button type="primary" plain icon="Plus" @click="handleAdd" v-hasPermi="['*:*:*']">新增</el-button>
+        <el-button type="primary" plain icon="Plus" @click="handleAdd" v-hasPermi="['*:*:*']">
+          新增
+        </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button type="success" plain icon="Edit" :disabled="single" @click="handleUpdate()" v-hasPermi="['*:*:*']">
@@ -45,10 +57,11 @@
     <!--  表格数据  -->
     <el-table v-loading="loading" :data="dataList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center"/>
-      <el-table-column label="项目名" align="center" prop="projectName"/>
-      <el-table-column label="项目标识" align="center" prop="projectCode" :show-overflow-tooltip="true"/>
-      <el-table-column label="项目包名" align="center" prop="projectPackage" :show-overflow-tooltip="true"/>
-      <el-table-column label="项目路径" align="center" prop="projectPath" :show-overflow-tooltip="true"/>
+      <el-table-column label="连接名" align="center" prop="connName"/>
+      <el-table-column label="数据库类型" align="center" prop="dbType"/>
+      <el-table-column label="数据库URL" align="center" prop="connUrl" :show-overflow-tooltip="true"/>
+      <el-table-column label="用户名" align="center" prop="username"/>
+      <el-table-column label="密码" align="center" prop="password"/>
       <el-table-column label="创建时间" align="center" prop="createTime" width="180">
         <template #default="scope">
           <span>{{ parseTime(scope.row.createTime) }}</span>
@@ -56,15 +69,9 @@
       </el-table-column>
       <el-table-column label="操作" align="center" width="250" class-name="small-padding fixed-width">
         <template #default="scope">
-          <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['*:*:*']">
-            修改
-          </el-button>
-          <el-button link type="primary" icon="Download" @click="handleDownload(scope.row)" v-hasPermi="['*:*:*']">
-            源码下载
-          </el-button>
-          <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['*:*:*']">
-            删除
-          </el-button>
+          <el-button link type="primary" icon="Connection" @click="handleTestConnect(scope.row)" v-hasPermi="['*:*:*']">测试</el-button>
+          <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['*:*:*']">修改</el-button>
+          <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['*:*:*']">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -78,33 +85,26 @@
     />
   </div>
   <!-- 添加或修改参数配置对话框 -->
-  <form-dialog
-      ref="FormDialogRef"
-      :title="title"
-      :form-data="form"
-      @onAmendSubmitForm="onAmendSubmitForm"
-      @onSaveSubmitForm="onSaveSubmitForm"
-  />
-  <origin-code-dialog ref="OriginCodeDialogRef" title="源码下载" :form-data="form" @onDownload="onDownload" />
+  <form-dialog ref="FormDialogRef" :title="title" :form-data="form" @onAmendSubmitForm="onAmendSubmitForm" @onSaveSubmitForm="onSaveSubmitForm" />
 </template>
 
-<script setup lang="ts" name="ProjectModify">
+<script setup lang="ts" name="Datasource">
 import { getCurrentInstance } from "vue";
-import * as CurrentConstants from "@/views/generator/projectModify/constants";
+import * as CurrentConstants from "@/views/generator/datasource/constants";
 import { parseTime } from "@/utils";
-import { ProjectModifyEntity } from "@/api/generator/models/ProjectModifyEntity";
-import FormDialog from "@/views/generator/projectModify/component/FormDialog.vue";
-import { ProjectModifyApiService } from "@/api/generator/ProjectModifyApiService";
-import OriginCodeDialog from "@/views/generator/projectModify/component/OriginCodeDialog.vue";
+import FormDialog from "@/views/generator/datasource/component/FormDialog.vue";
+import { DatasourceEntity } from "@/api/generator/models/DatasourceEntity";
+import { DatasourceApiService } from "@/api/generator/DatasourceApiService";
+import { dbTypeOptions } from "@/views/generator/datasource/constants";
+import { CryptoJSUtils } from "@/utils/security/cryptoJS";
 
 // 弹窗 Ref
 const FormDialogRef = ref();
-const OriginCodeDialogRef = ref();
 // @ts-ignore
-const {proxy} = getCurrentInstance();
+const { proxy } = getCurrentInstance();
 // data 数据
 const currentData = reactive(CurrentConstants.DATA);
-const {queryParams, form, rules} = toRefs(currentData);
+const { queryParams, form, rules } = toRefs(currentData);
 // 日期参数
 const dateRange = ref([]);
 // 搜索框显示
@@ -112,7 +112,7 @@ const showSearch = ref(true);
 // 表格加载动画
 const loading = ref(true);
 // 表格数据
-const dataList = ref<ProjectModifyEntity[]>([]);
+const dataList = ref<DatasourceEntity[]>([]);
 // 总条数
 const total = ref(0);
 // 全局修改按钮状态
@@ -124,7 +124,7 @@ const ids = ref<number[]>([]);
 // 弹窗标题
 const title = ref("");
 
-const serviceApi = new ProjectModifyApiService();
+const serviceApi = new DatasourceApiService();
 
 onMounted(() => {
   getDataList();
@@ -134,7 +134,7 @@ onMounted(() => {
 async function getDataList() {
   loading.value = true;
   try {
-    const {data} = await serviceApi.page(proxy.addDateRange(queryParams.value, dateRange.value));
+    const { data } = await serviceApi.page(proxy.addDateRange(queryParams.value, dateRange.value));
     dataList.value = data.list;
     total.value = data.totalCount;
   } catch (e: any) {
@@ -145,7 +145,7 @@ async function getDataList() {
 }
 
 /** 删除按钮操作 */
-function handleDelete(row?: ProjectModifyEntity) {
+function handleDelete(row?: DatasourceEntity) {
   const params = [row!.id] || ids.value;
   proxy.$modal.confirm('是否确认删除编号为"' + params + '"的数据项？').then(function () {
     return serviceApi.delete(params);
@@ -159,38 +159,28 @@ function handleDelete(row?: ProjectModifyEntity) {
 /** 新增按钮操作 */
 function handleAdd() {
   FormDialogRef.value.onOpen()
-  title.value = "添加项目";
+  title.value = "添加基类";
 }
 
 /** 修改按钮操作 */
-async function handleUpdate(row?: ProjectModifyEntity) {
+async function handleUpdate(row?: DatasourceEntity) {
   const params = row!.id || ids.value;
   try {
-    const {data} = await serviceApi.detail(params);
+    const { data } = await serviceApi.detail(params);
     if (!data) return proxy.$modal.msgWarning(`未找到[${params}]的数据`);
+    data.password = CryptoJSUtils.decrypt(data.password);
     form.value = data;
-    FormDialogRef.value.onOpen();
-    title.value = "修改项目";
+    FormDialogRef.value.onOpen()
+    title.value = "修改基类";
   } catch (e: any) {
     proxy.$modal.msgError(e.message);
   }
 }
 
-/** 源码下载 */
-const handleDownload = async (row: ProjectModifyEntity) => {
-  const params = row.id || ids.value;
-  try {
-    const {data} = await serviceApi.detail(params);
-    if (!data) return proxy.$modal.msgWarning(`未找到[${params}]的数据`);
-    form.value = data;
-    OriginCodeDialogRef.value.onOpen();
-  } catch (e: any) {
-    proxy.$modal.msgError(e.message);
-  }
-}
-
-/** 修改 */
-const onAmendSubmitForm = async (formData: ProjectModifyEntity) => {
+/**
+ * 修改
+ */
+const onAmendSubmitForm = async (formData: DatasourceEntity) => {
   try {
     await serviceApi.update(formData);
     proxy.$modal.msgSuccess('修改成功');
@@ -201,8 +191,10 @@ const onAmendSubmitForm = async (formData: ProjectModifyEntity) => {
   }
 };
 
-/** 新增 */
-const onSaveSubmitForm = async (formData: ProjectModifyEntity) => {
+/**
+ * 新增
+ */
+const onSaveSubmitForm = async (formData: DatasourceEntity) => {
   try {
     await serviceApi.save(formData);
     proxy.$modal.msgSuccess('新增成功');
@@ -213,13 +205,15 @@ const onSaveSubmitForm = async (formData: ProjectModifyEntity) => {
   }
 };
 
-/** 下载源码 */
-const onDownload = async (formData: ProjectModifyEntity) => {
+/**
+ * 测试DB连接
+ */
+const handleTestConnect = async (row: DatasourceEntity) => {
   try {
-    await serviceApi.download(formData.id as number);
-    OriginCodeDialogRef.value.onClose();
+    const { data } = await serviceApi.testConnect(row.id!);
+    proxy.$modal.msgSuccess(`${row.connName}${data}`);
   } catch (e: any) {
-    proxy.$modal.msgError(e.message);
+    proxy.$modal.msgError(`${row.connName}${e.message}`);
   }
 };
 
@@ -237,8 +231,8 @@ function resetQuery() {
 }
 
 /** 多选框选中数据 */
-function handleSelectionChange(selection: ProjectModifyEntity[]) {
-  ids.value = selection.map((item: ProjectModifyEntity) => item.id!);
+function handleSelectionChange(selection: DatasourceEntity[]) {
+  ids.value = selection.map((item: DatasourceEntity) => item.id!);
   single.value = selection.length != 1;
   multiple.value = !selection.length;
 }

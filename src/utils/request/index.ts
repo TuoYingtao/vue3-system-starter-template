@@ -19,7 +19,7 @@ export const config: IAxiosRequestConfig = merge(<AxiosOptionsConfigImpl> new Ax
     isJoinPrefix: true,
     urlPrefix: AxiosConstants.AxiosUrlPrefixEnum.DEFAULT,
     isReturnNativeResponse: false,
-    isTransformResponse: true,
+    isTransformResponse: false,
     joinParamsToUrl: false,
     formatDate: true,
     joinTime: true,

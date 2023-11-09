@@ -1,10 +1,10 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="QueryRef" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="项目名" prop="projectName">
+      <el-form-item label="表名" prop="tableName">
         <el-input
-            v-model="queryParams.projectName"
-            placeholder="请输入项目名"
+            v-model="queryParams.tableName"
+            placeholder="请输入表名"
             clearable
             style="width: 240px"
             @keyup.enter="handleQuery"
@@ -28,7 +28,9 @@
     <!--  表格操作  -->
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button type="primary" plain icon="Plus" @click="handleAdd" v-hasPermi="['*:*:*']">新增</el-button>
+        <el-button type="primary" plain icon="Plus" @click="handleImport" v-hasPermi="['*:*:*']">
+          导入
+        </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button type="success" plain icon="Edit" :disabled="single" @click="handleUpdate()" v-hasPermi="['*:*:*']">
@@ -45,10 +47,9 @@
     <!--  表格数据  -->
     <el-table v-loading="loading" :data="dataList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center"/>
-      <el-table-column label="项目名" align="center" prop="projectName"/>
-      <el-table-column label="项目标识" align="center" prop="projectCode" :show-overflow-tooltip="true"/>
-      <el-table-column label="项目包名" align="center" prop="projectPackage" :show-overflow-tooltip="true"/>
-      <el-table-column label="项目路径" align="center" prop="projectPath" :show-overflow-tooltip="true"/>
+      <el-table-column label="表名" align="center" prop="tableName"/>
+      <el-table-column label="表说明" align="center" prop="tableComment" :show-overflow-tooltip="true"/>
+      <el-table-column label="类" align="center" prop="className"/>
       <el-table-column label="创建时间" align="center" prop="createTime" width="180">
         <template #default="scope">
           <span>{{ parseTime(scope.row.createTime) }}</span>
@@ -56,15 +57,9 @@
       </el-table-column>
       <el-table-column label="操作" align="center" width="250" class-name="small-padding fixed-width">
         <template #default="scope">
-          <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['*:*:*']">
-            修改
-          </el-button>
-          <el-button link type="primary" icon="Download" @click="handleDownload(scope.row)" v-hasPermi="['*:*:*']">
-            源码下载
-          </el-button>
-          <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['*:*:*']">
-            删除
-          </el-button>
+          <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['*:*:*']">修改</el-button>
+          <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['*:*:*']">删除</el-button>
+          <el-button link type="primary" icon="Refresh" @click="handleSync(scope.row)" v-hasPermi="['*:*:*']">同步</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -78,33 +73,29 @@
     />
   </div>
   <!-- 添加或修改参数配置对话框 -->
-  <form-dialog
-      ref="FormDialogRef"
-      :title="title"
-      :form-data="form"
-      @onAmendSubmitForm="onAmendSubmitForm"
-      @onSaveSubmitForm="onSaveSubmitForm"
-  />
-  <origin-code-dialog ref="OriginCodeDialogRef" title="源码下载" :form-data="form" @onDownload="onDownload" />
+  <form-dialog ref="FormDialogRef" :title="title" :form-data="form" @onAmendSubmitForm="onAmendSubmitForm" @onSaveSubmitForm="onSaveSubmitForm" />
+  <import-dialog ref="ImportDialogRef" title="导入数据表" :datasource-list="datasourceList" @onImportTable="onImportTable" />
 </template>
 
-<script setup lang="ts" name="ProjectModify">
+<script setup lang="ts" name="GeneratorCode">
 import { getCurrentInstance } from "vue";
-import * as CurrentConstants from "@/views/generator/projectModify/constants";
+import * as CurrentConstants from "@/views/generator/table/constants";
 import { parseTime } from "@/utils";
-import { ProjectModifyEntity } from "@/api/generator/models/ProjectModifyEntity";
-import FormDialog from "@/views/generator/projectModify/component/FormDialog.vue";
-import { ProjectModifyApiService } from "@/api/generator/ProjectModifyApiService";
-import OriginCodeDialog from "@/views/generator/projectModify/component/OriginCodeDialog.vue";
+import FormDialog from "@/views/generator/table/component/FormDialog.vue";
+import { TableEntity } from "@/api/generator/models/TableEntity";
+import { TableApiService } from "@/api/generator/TableApiService";
+import { DatasourceApiService } from "@/api/generator/DatasourceApiService";
+import { DatasourceEntity } from "@/api/generator/models/DatasourceEntity";
+import ImportDialog from "@/views/generator/table/component/ImportDialog.vue";
 
 // 弹窗 Ref
 const FormDialogRef = ref();
-const OriginCodeDialogRef = ref();
+const ImportDialogRef = ref();
 // @ts-ignore
-const {proxy} = getCurrentInstance();
+const { proxy } = getCurrentInstance();
 // data 数据
 const currentData = reactive(CurrentConstants.DATA);
-const {queryParams, form, rules} = toRefs(currentData);
+const { queryParams, form, rules } = toRefs(currentData);
 // 日期参数
 const dateRange = ref([]);
 // 搜索框显示
@@ -112,7 +103,7 @@ const showSearch = ref(true);
 // 表格加载动画
 const loading = ref(true);
 // 表格数据
-const dataList = ref<ProjectModifyEntity[]>([]);
+const dataList = ref<TableEntity[]>([]);
 // 总条数
 const total = ref(0);
 // 全局修改按钮状态
@@ -124,17 +115,21 @@ const ids = ref<number[]>([]);
 // 弹窗标题
 const title = ref("");
 
-const serviceApi = new ProjectModifyApiService();
+const serviceApi = new TableApiService();
+const datasourceApi = new DatasourceApiService();
+
+const datasourceList = ref<DatasourceEntity[]>([]);
 
 onMounted(() => {
   getDataList();
+  getDatasourceList();
 })
 
 /** 查询参数列表 */
 async function getDataList() {
   loading.value = true;
   try {
-    const {data} = await serviceApi.page(proxy.addDateRange(queryParams.value, dateRange.value));
+    const { data } = await serviceApi.page(proxy.addDateRange(queryParams.value, dateRange.value));
     dataList.value = data.list;
     total.value = data.totalCount;
   } catch (e: any) {
@@ -144,8 +139,18 @@ async function getDataList() {
   }
 }
 
+/** 数据源列表 */
+async function getDatasourceList() {
+  try {
+    const { data } = await datasourceApi.list();
+    datasourceList.value = data;
+  } catch (e: any) {
+    proxy.$modal.msgError(e.message);
+  }
+}
+
 /** 删除按钮操作 */
-function handleDelete(row?: ProjectModifyEntity) {
+function handleDelete(row?: TableEntity) {
   const params = [row!.id] || ids.value;
   proxy.$modal.confirm('是否确认删除编号为"' + params + '"的数据项？').then(function () {
     return serviceApi.delete(params);
@@ -157,40 +162,29 @@ function handleDelete(row?: ProjectModifyEntity) {
 }
 
 /** 新增按钮操作 */
-function handleAdd() {
-  FormDialogRef.value.onOpen()
-  title.value = "添加项目";
+async function handleImport() {
+  await getDatasourceList();
+  ImportDialogRef.value.onOpen();
 }
 
 /** 修改按钮操作 */
-async function handleUpdate(row?: ProjectModifyEntity) {
+async function handleUpdate(row?: TableEntity) {
   const params = row!.id || ids.value;
   try {
-    const {data} = await serviceApi.detail(params);
+    const { data } = await serviceApi.detail(params);
     if (!data) return proxy.$modal.msgWarning(`未找到[${params}]的数据`);
     form.value = data;
-    FormDialogRef.value.onOpen();
-    title.value = "修改项目";
+    FormDialogRef.value.onOpen()
+    title.value = "修改基类";
   } catch (e: any) {
     proxy.$modal.msgError(e.message);
   }
 }
 
-/** 源码下载 */
-const handleDownload = async (row: ProjectModifyEntity) => {
-  const params = row.id || ids.value;
-  try {
-    const {data} = await serviceApi.detail(params);
-    if (!data) return proxy.$modal.msgWarning(`未找到[${params}]的数据`);
-    form.value = data;
-    OriginCodeDialogRef.value.onOpen();
-  } catch (e: any) {
-    proxy.$modal.msgError(e.message);
-  }
-}
-
-/** 修改 */
-const onAmendSubmitForm = async (formData: ProjectModifyEntity) => {
+/**
+ * 修改
+ */
+const onAmendSubmitForm = async (formData: TableEntity) => {
   try {
     await serviceApi.update(formData);
     proxy.$modal.msgSuccess('修改成功');
@@ -201,8 +195,10 @@ const onAmendSubmitForm = async (formData: ProjectModifyEntity) => {
   }
 };
 
-/** 新增 */
-const onSaveSubmitForm = async (formData: ProjectModifyEntity) => {
+/**
+ * 新增
+ */
+const onSaveSubmitForm = async (formData: TableEntity) => {
   try {
     await serviceApi.save(formData);
     proxy.$modal.msgSuccess('新增成功');
@@ -213,14 +209,28 @@ const onSaveSubmitForm = async (formData: ProjectModifyEntity) => {
   }
 };
 
-/** 下载源码 */
-const onDownload = async (formData: ProjectModifyEntity) => {
+/** 导入表数据 */
+const onImportTable = async (e: Record<string, any>) => {
   try {
-    await serviceApi.download(formData.id as number);
-    OriginCodeDialogRef.value.onClose();
+    const { data } = await serviceApi.importTable(e.dataSourceId, e.tableNames);
+    proxy.$modal.msgSuccess(data);
+    await getDataList();
+    ImportDialogRef.value.onClose();
   } catch (e: any) {
     proxy.$modal.msgError(e.message);
   }
+};
+
+/** 同步表数据 */
+const handleSync = async (formData: TableEntity) => {
+  proxy.$modal.confirm('是否确认同步表名为"' + formData.tableName + '"的数据项？').then(async function () {
+    const { data } = await serviceApi.sync(formData.id);
+    return data;
+  }).then((data: string) => {
+    getDataList();
+    proxy.$modal.msgSuccess(data);
+  }).catch(() => {
+  });
 };
 
 /** 搜索按钮操作 */
@@ -237,8 +247,8 @@ function resetQuery() {
 }
 
 /** 多选框选中数据 */
-function handleSelectionChange(selection: ProjectModifyEntity[]) {
-  ids.value = selection.map((item: ProjectModifyEntity) => item.id!);
+function handleSelectionChange(selection: TableEntity[]) {
+  ids.value = selection.map((item: TableEntity) => item.id!);
   single.value = selection.length != 1;
   multiple.value = !selection.length;
 }

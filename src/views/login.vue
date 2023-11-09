@@ -74,7 +74,7 @@
 
 <script setup>
 import { getCodeImg } from "@/api/login";
-import { encrypt, decrypt } from "@/utils/jsencrypt";
+import { JSEncryptUtils } from "@/utils/security/jsencrypt";
 import useUserStore from '@/stores/modules/user'
 import { CookiesUtils } from "@/utils/request/utils/Cookies";
 import { COPYRIGHT_INFO, VITE_APP_NAME } from "@/config/global";
@@ -123,7 +123,7 @@ function handleLogin() {
       // 勾选了需要记住密码设置在 cookie 中设置记住用户名和密码
       if (loginForm.value.rememberMe) {
         cookiesUtils.set({key: LOGIN_FIELD.USERNAME, value: loginForm.value.username, expires: 30});
-        cookiesUtils.set({key: LOGIN_FIELD.PASSWORD, value: encrypt(loginForm.value.password), expires: 30});
+        cookiesUtils.set({key: LOGIN_FIELD.PASSWORD, value: JSEncryptUtils.encrypt(loginForm.value.password), expires: 30});
         cookiesUtils.set({key: LOGIN_FIELD.REMEMBER_ME, value: loginForm.value.rememberMe, expires: 30});
       } else {
         // 否则移除
@@ -166,7 +166,7 @@ function getCookie() {
   const rememberMe = cookiesUtils.get(LOGIN_FIELD.REMEMBER_ME);
   loginForm.value = {
     username: username === undefined ? loginForm.value.username : username,
-    password: password === undefined ? loginForm.value.password : decrypt(password),
+    password: password === undefined ? loginForm.value.password : JSEncryptUtils.decrypt(password),
     rememberMe: rememberMe === undefined ? false : Boolean(rememberMe)
   };
 }
