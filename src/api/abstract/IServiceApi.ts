@@ -14,7 +14,7 @@ export abstract class IServiceApi<T extends BaseEntity, L extends BaseEntityList
    * 列表
    * @param param
    */
-  list(param: Params): Promise<Result<T[]>> {
+  list(param?: Params): Promise<Result<T[]>> {
     return Promise.resolve<Result<T[]>>(RESULT as Result<T[]>);
   }
 

@@ -33,6 +33,11 @@
         </el-button>
       </el-col>
       <el-col :span="1.5">
+        <el-button type="success" plain icon="Folder" :disabled="multiple" @click="handleGeneratorCode()" v-hasPermi="['*:*:*']">
+          生成代码
+        </el-button>
+      </el-col>
+      <el-col :span="1.5">
         <el-button type="success" plain icon="Edit" :disabled="single" @click="handleUpdate()" v-hasPermi="['*:*:*']">
           修改
         </el-button>
@@ -58,6 +63,7 @@
       <el-table-column label="操作" align="center" width="250" class-name="small-padding fixed-width">
         <template #default="scope">
           <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['*:*:*']">修改</el-button>
+          <el-button link type="primary" icon="Folder" @click="handleGenerator(scope.row)" v-hasPermi="['*:*:*']">生成代码</el-button>
           <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['*:*:*']">删除</el-button>
           <el-button link type="primary" icon="Refresh" @click="handleSync(scope.row)" v-hasPermi="['*:*:*']">同步</el-button>
         </template>
@@ -73,8 +79,15 @@
     />
   </div>
   <!-- 添加或修改参数配置对话框 -->
-  <form-dialog ref="FormDialogRef" :title="title" :form-data="form" @onAmendSubmitForm="onAmendSubmitForm" @onSaveSubmitForm="onSaveSubmitForm" />
+  <form-dialog
+      ref="FormDialogRef"
+      :form-data="form"
+      :type-list="typeList"
+      @onSubmitField="onSubmitField"/>
+  <!-- 导入弹窗 -->
   <import-dialog ref="ImportDialogRef" title="导入数据表" :datasource-list="datasourceList" @onImportTable="onImportTable" />
+  <!-- 生成弹窗 -->
+  <generator-dialog ref="GeneratorDialogRef" title="生成代码" :form-data="form" :base-class-list="baseClassList" @onAmendSubmitForm="onAmendSubmitForm" @onGeneratorCode="onGeneratorCode" />
 </template>
 
 <script setup lang="ts" name="GeneratorCode">
@@ -82,15 +95,22 @@ import { getCurrentInstance } from "vue";
 import * as CurrentConstants from "@/views/generator/table/constants";
 import { parseTime } from "@/utils";
 import FormDialog from "@/views/generator/table/component/FormDialog.vue";
-import { TableEntity } from "@/api/generator/models/TableEntity";
+import { TableEntity, TableField } from "@/api/generator/models/TableEntity";
 import { TableApiService } from "@/api/generator/TableApiService";
 import { DatasourceApiService } from "@/api/generator/DatasourceApiService";
 import { DatasourceEntity } from "@/api/generator/models/DatasourceEntity";
 import ImportDialog from "@/views/generator/table/component/ImportDialog.vue";
+import { FieldTypeApiService } from "@/api/generator/FieldTypeApiService";
+import GeneratorDialog from "@/views/generator/table/component/GeneratorDialog.vue";
+import { BaseClassApiService } from "@/api/generator/BaseClassApiService";
+import { BaseClassEntity } from "@/api/generator/models/BaseClassEntity";
+import { GeneratorApiService } from "@/api/generator/GeneratorApiService";
+import { GeneratorTypeEnum } from "@/enum";
 
 // 弹窗 Ref
 const FormDialogRef = ref();
 const ImportDialogRef = ref();
+const GeneratorDialogRef = ref();
 // @ts-ignore
 const { proxy } = getCurrentInstance();
 // data 数据
@@ -112,13 +132,19 @@ const single = ref(true);
 const multiple = ref(true);
 // 批量选中ID
 const ids = ref<number[]>([]);
-// 弹窗标题
-const title = ref("");
 
 const serviceApi = new TableApiService();
 const datasourceApi = new DatasourceApiService();
+const fieldTypeApi = new FieldTypeApiService();
+const baseClassApi = new BaseClassApiService();
+const generatorApi = new GeneratorApiService();
 
+// 数据源列表
 const datasourceList = ref<DatasourceEntity[]>([]);
+// 类型列表
+const typeList = ref<string[]>([]);
+// 基类列表
+const baseClassList = ref<BaseClassEntity[]>([]);
 
 onMounted(() => {
   getDataList();
@@ -161,7 +187,7 @@ function handleDelete(row?: TableEntity) {
   });
 }
 
-/** 新增按钮操作 */
+/** 导入按钮操作 */
 async function handleImport() {
   await getDatasourceList();
   ImportDialogRef.value.onOpen();
@@ -172,14 +198,27 @@ async function handleUpdate(row?: TableEntity) {
   const params = row!.id || ids.value;
   try {
     const { data } = await serviceApi.detail(params);
+    typeList.value = Array.from(new Set((await fieldTypeApi.list()).data.map((item) => item.attrType)));
     if (!data) return proxy.$modal.msgWarning(`未找到[${params}]的数据`);
     form.value = data;
     FormDialogRef.value.onOpen()
-    title.value = "修改基类";
   } catch (e: any) {
     proxy.$modal.msgError(e.message);
   }
 }
+
+/** 生成代码按钮操作 */
+const handleGenerator = async (row?: TableEntity) => {
+  const params = row!.id || ids.value;
+  try {
+    const { data } = await serviceApi.detail(params);
+    baseClassList.value = (await baseClassApi.list()).data;
+    form.value = data;
+    GeneratorDialogRef.value.onOpen();
+  } catch (e: any) {
+    proxy.$modal.msgError(e.message);
+  }
+};
 
 /**
  * 修改
@@ -196,12 +235,12 @@ const onAmendSubmitForm = async (formData: TableEntity) => {
 };
 
 /**
- * 新增
+ * 修改
  */
-const onSaveSubmitForm = async (formData: TableEntity) => {
+const onSubmitField = async (formData: TableField[]) => {
   try {
-    await serviceApi.save(formData);
-    proxy.$modal.msgSuccess('新增成功');
+    await serviceApi.updateTableField(formData);
+    proxy.$modal.msgSuccess('修改成功');
     await getDataList();
     FormDialogRef.value.onClose();
   } catch (e: any) {
@@ -224,7 +263,7 @@ const onImportTable = async (e: Record<string, any>) => {
 /** 同步表数据 */
 const handleSync = async (formData: TableEntity) => {
   proxy.$modal.confirm('是否确认同步表名为"' + formData.tableName + '"的数据项？').then(async function () {
-    const { data } = await serviceApi.sync(formData.id);
+    const { data } = await serviceApi.sync(formData.id!);
     return data;
   }).then((data: string) => {
     getDataList();
@@ -232,6 +271,36 @@ const handleSync = async (formData: TableEntity) => {
   }).catch(() => {
   });
 };
+
+/** 生成代码 */
+const onGeneratorCode = async (formData: TableEntity) => {
+  try {
+    await onAmendSubmitForm(formData);
+    proxy.$modal.loading('代码生成中...');
+    if (formData.generatorType === GeneratorTypeEnum.ZIP) {
+      await generatorApi.download('' + formData.id!);
+      return;
+    }
+    const { data } = await generatorApi.code([formData.id!]);
+    proxy.$modal.msgSuccess(data);
+  } catch (e: any) {
+    proxy.$modal.msgError(e.message);
+  } finally {
+    proxy.$modal.closeLoading();
+  }
+};
+
+const handleGeneratorCode = async () => {
+  try {
+    proxy.$modal.loading('代码生成中...');
+    const { data } = await generatorApi.code(ids.value);
+    proxy.$modal.msgSuccess(data);
+  } catch (e: any) {
+    proxy.$modal.msgError(e.message);
+  } finally {
+    proxy.$modal.closeLoading();
+  }
+}
 
 /** 搜索按钮操作 */
 function handleQuery() {

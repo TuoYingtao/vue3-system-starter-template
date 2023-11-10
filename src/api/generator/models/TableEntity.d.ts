@@ -1,5 +1,5 @@
 export interface TableEntity extends BaseEntity {
-  id: number;
+  id?: number;
   author?: string;
   backendPath: string;
   className: string;

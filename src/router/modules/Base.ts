@@ -14,24 +14,10 @@ export default [
     alwaysShow: true,
     children: [
       {
-        path: 'base-class',
-        component: () => import('@/views/generator/baseClass/index.vue'),
-        name: 'BaseClass',
-        meta: { title: '基类管理', icon: 'class', noCache: true, affix: false },
-        hidden: false,
-      },
-      {
-        path: 'project-modify',
-        component: () => import('@/views/generator/projectModify/index.vue'),
-        name: 'ProjectModify',
-        meta: { title: '项目名变更', icon: 'edit', noCache: true, affix: false },
-        hidden: false,
-      },
-      {
-        path: 'field-type',
-        component: () => import('@/views/generator/fieldType/index.vue'),
-        name: 'FieldType',
-        meta: { title: '字段类型映射', icon: 'list', noCache: true, affix: false },
+        path: 'index',
+        component: () => import('@/views/generator/table/index.vue'),
+        name: 'GeneratorCode',
+        meta: { title: '代码生成', icon: 'table', noCache: true, affix: false },
         hidden: false,
       },
       {
@@ -42,10 +28,24 @@ export default [
         hidden: false,
       },
       {
-        path: 'index',
-        component: () => import('@/views/generator/table/index.vue'),
-        name: 'GeneratorCode',
-        meta: { title: '代码生成', icon: 'table', noCache: true, affix: false },
+        path: 'project-modify',
+        component: () => import('@/views/generator/projectModify/index.vue'),
+        name: 'ProjectModify',
+        meta: { title: '项目名变更', icon: 'edit', noCache: true, affix: false },
+        hidden: false,
+      },
+      {
+        path: 'base-class',
+        component: () => import('@/views/generator/baseClass/index.vue'),
+        name: 'BaseClass',
+        meta: { title: '基类管理', icon: 'class', noCache: true, affix: false },
+        hidden: false,
+      },
+      {
+        path: 'field-type',
+        component: () => import('@/views/generator/fieldType/index.vue'),
+        name: 'FieldType',
+        meta: { title: '字段类型映射', icon: 'list', noCache: true, affix: false },
         hidden: false,
       },
     ]

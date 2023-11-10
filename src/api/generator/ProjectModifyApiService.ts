@@ -32,7 +32,7 @@ export class ProjectModifyApiService extends IServiceApi<ProjectModifyEntity, Pr
   }
 
   delete(ids: Params): Promise<Result> {
-    return request.get<Result>({
+    return request.delete<Result>({
       url: '/project',
       params: ids,
     });

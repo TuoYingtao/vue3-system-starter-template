@@ -1,6 +1,7 @@
 import { FormRules } from "element-plus";
 import { TableEntity } from "@/api/generator/models/TableEntity";
 import { DatasourceEntity } from "@/api/generator/models/DatasourceEntity";
+import { BaseClassEntity } from "@/api/generator/models/BaseClassEntity";
 
 interface IData {
   form: TableEntity;
@@ -73,6 +74,8 @@ export const DATA: IData = {
 export interface Props {
   title: string;
   formData: TableEntity;
+  typeList?: string[];
+  baseClassList?: BaseClassEntity[];
 }
 
 export interface ImportProps {

@@ -4,6 +4,14 @@ import request from "@/utils/request/index";
 
 export class FieldTypeApiService extends IServiceApi<FieldTypeEntity, FieldTypeEntityList> {
 
+
+  list(param?: Params): Promise<Result<FieldTypeEntity[]>> {
+    return request.get<Result<FieldTypeEntity[]>>({
+      url: '/field_type/list',
+      params: param,
+    });
+  }
+
   delete(ids: Params): Promise<Result> {
     return request.delete<Result>({
       url: '/field_type',

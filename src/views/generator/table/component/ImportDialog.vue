@@ -26,7 +26,7 @@
   </el-dialog>
 </template>
 
-<script setup lang="ts" name="FormDialog">
+<script setup lang="ts" name="ImportDialog">
 import { ImportProps } from "@/views/generator/table/constants";
 import { DatasourceApiService } from "@/api/generator/DatasourceApiService";
 import { DBTableEntity } from "@/api/generator/models/DatasourceEntity";

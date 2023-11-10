@@ -52,7 +52,7 @@ export class TableApiService extends IServiceApi<TableEntity, TableEntityList> {
   }
 
   updateTableField(tableFields: TableField[]) {
-    return request.post<Result<string>>({
+    return request.put<Result<string>>({
       url: `/table/field/batch/update`,
       params: tableFields,
     })
