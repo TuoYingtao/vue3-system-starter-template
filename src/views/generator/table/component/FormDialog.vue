@@ -6,7 +6,7 @@
           <el-table-column align="center" label="#" prop="sort" width="80" />
           <el-table-column align="center" width="80">
             <template #header>
-              <el-tooltip effect="dark" content="允许上下拖拽" placement="top">
+              <el-tooltip effect="dark" content="允许上下拖拽" :show-after="700" placement="top">
                 <el-icon><QuestionFilled /></el-icon>
               </el-tooltip>
             </template>
@@ -19,7 +19,7 @@
           <el-table-column align="center" label="字段名" prop="fieldName"/>
           <el-table-column align="center" prop="fieldComment" :show-overflow-tooltip="true">
             <template #header>
-              <el-tooltip effect="dark" content="可编辑内容" placement="top">
+              <el-tooltip effect="dark" content="可编辑内容" :show-after="700" placement="top">
                 <div class="flex justify-center items-center"><el-icon><Edit /></el-icon>说明</div>
               </el-tooltip>
             </template>
@@ -37,7 +37,7 @@
           <el-table-column align="center" label="字段类型" prop="fieldType"/>
           <el-table-column align="center" label="属性名" prop="attrName">
             <template #header>
-              <el-tooltip effect="dark" content="可编辑内容" placement="top">
+              <el-tooltip effect="dark" content="可编辑内容" :show-after="700" placement="top">
                 <div class="flex justify-center items-center"><el-icon><Edit /></el-icon>属性名</div>
               </el-tooltip>
             </template>
@@ -89,7 +89,7 @@
           </el-table-column>
           <el-table-column align="center" prop="fieldComment">
             <template #header>
-              <el-tooltip effect="dark" content="可编辑内容" placement="top">
+              <el-tooltip effect="dark" content="可编辑内容" :show-after="700" placement="top">
                 <div class="flex justify-center items-center"><el-icon><Edit /></el-icon>表单效验</div>
               </el-tooltip>
             </template>
@@ -113,7 +113,7 @@
           </el-table-column>
           <el-table-column align="center" prop="attrName">
             <template #header>
-              <el-tooltip effect="dark" content="可编辑内容" placement="top">
+              <el-tooltip effect="dark" content="可编辑内容" :show-after="700" placement="top">
                 <div class="flex justify-center items-center"><el-icon><Edit /></el-icon>表单字典类型</div>
               </el-tooltip>
             </template>

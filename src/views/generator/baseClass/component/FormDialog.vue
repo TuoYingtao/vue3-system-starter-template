@@ -2,22 +2,22 @@
   <el-dialog :title="title" v-model="open" width="500px" draggable append-to-body @close="onClose">
     <el-form ref="FormRef" :model="formData" :rules="rules" label-width="80px">
       <el-form-item label="基类编码" prop="code">
-        <el-tooltip class="box-item" effect="dark" content="基类编码" placement="top">
+        <el-tooltip class="box-item" effect="dark" content="基类编码" :show-after="700" placement="top">
           <el-input v-model="formData.code" placeholder="请输入基类编码" />
         </el-tooltip>
       </el-form-item>
       <el-form-item label="字段" prop="fields">
-        <el-tooltip class="box-item" effect="dark" content="基类的成员属性,属性与属性之间用英文逗号分隔（,）" placement="top">
+        <el-tooltip class="box-item" effect="dark" content="基类的成员属性,属性与属性之间用英文逗号分隔（,）" :show-after="700" placement="top">
           <el-input v-model="formData.fields" placeholder="请输入字段" />
         </el-tooltip>
       </el-form-item>
       <el-form-item label="包名" prop="packageName">
-        <el-tooltip class="box-item" effect="dark" content="基类所在的包名路径" placement="top">
+        <el-tooltip class="box-item" effect="dark" content="基类所在的包名路径" :show-after="700" placement="top">
           <el-input v-model="formData.packageName" placeholder="请输入包名" />
         </el-tooltip>
       </el-form-item>
       <el-form-item label="备注" prop="remark">
-        <el-tooltip class="box-item" effect="dark" content="备注" placement="top">
+        <el-tooltip class="box-item" effect="dark" content="备注" :show-after="700" placement="top">
           <el-input v-model="formData.remark" type="textarea" placeholder="请输入备注" />
         </el-tooltip>
       </el-form-item>

@@ -4,14 +4,14 @@
       <el-row :gutter="20">
         <el-col :span="12">
           <el-form-item label="项目名" prop="projectName">
-            <el-tooltip class="box-item" effect="dark" content="项目名如：glume-boot" placement="top">
+            <el-tooltip class="box-item" effect="dark" content="项目名如：glume-boot" :show-after="700" placement="top">
               <el-input v-model="formData.projectName" disabled placeholder="请输入项目名" />
             </el-tooltip>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="项目标识" prop="projectCode">
-            <el-tooltip class="box-item" effect="dark" content="项目标识如：glume" placement="top">
+            <el-tooltip class="box-item" effect="dark" content="项目标识如：glume" :show-after="700" placement="top">
               <el-input v-model="formData.projectCode" disabled placeholder="请输入项目标识" />
             </el-tooltip>
           </el-form-item>
@@ -20,14 +20,14 @@
       <el-row :gutter="20">
         <el-col :span="12">
           <el-form-item label="项目包名" prop="projectPackage">
-            <el-tooltip class="box-item" effect="dark" content="项目包名如：com.glume" placement="top">
+            <el-tooltip class="box-item" effect="dark" content="项目包名如：com.glume" :show-after="700" placement="top">
               <el-input v-model="formData.projectPackage" disabled placeholder="请输入项目包名" />
             </el-tooltip>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="项目路径" prop="projectPath">
-            <el-tooltip class="box-item" effect="dark" content="项目源码下载路径" placement="top">
+            <el-tooltip class="box-item" effect="dark" content="项目源码下载路径" :show-after="700" placement="top">
               <el-input v-model="formData.projectPath" disabled placeholder="请输入项目路径" />
             </el-tooltip>
           </el-form-item>
@@ -37,7 +37,7 @@
       <el-row :gutter="20">
         <el-col :span="24">
           <el-form-item label="项目名" prop="modifyProjectName">
-            <el-tooltip class="box-item" effect="dark" content="项目名如：glume-boot" placement="top">
+            <el-tooltip class="box-item" effect="dark" content="项目名如：glume-boot" :show-after="700" placement="top">
               <el-input v-model="formData.modifyProjectName" placeholder="请输入项目名" />
             </el-tooltip>
           </el-form-item>
@@ -46,14 +46,14 @@
       <el-row :gutter="20">
         <el-col :span="12">
           <el-form-item label="项目标识" prop="modifyProjectCode">
-            <el-tooltip class="box-item" effect="dark" content="项目标识如：glume" placement="top">
+            <el-tooltip class="box-item" effect="dark" content="项目标识如：glume" :show-after="700" placement="top">
               <el-input v-model="formData.modifyProjectCode" placeholder="请输入项目标识" />
             </el-tooltip>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="项目包名" prop="modifyProjectPackage">
-            <el-tooltip class="box-item" effect="dark" content="项目包名如：com.glume" placement="top">
+            <el-tooltip class="box-item" effect="dark" content="项目包名如：com.glume" :show-after="700" placement="top">
               <el-input v-model="formData.modifyProjectPackage" placeholder="请输入项目包名" />
             </el-tooltip>
           </el-form-item>
@@ -62,14 +62,14 @@
       <el-row :gutter="20">
         <el-col :span="12">
           <el-form-item label="排除文件" prop="exclusions">
-            <el-tooltip class="box-item" effect="dark" content="排除文件如：多个文件之间用英文逗号分割" placement="top">
+            <el-tooltip class="box-item" effect="dark" content="排除文件如：多个文件之间用英文逗号分割" :show-after="700" placement="top">
               <el-input v-model="formData.exclusions" placeholder="请输入排除文件" />
             </el-tooltip>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="变更文件" prop="modifySuffix">
-            <el-tooltip class="box-item" effect="dark" content="变更文件如：多个文件之间用英文逗号分割" placement="top">
+            <el-tooltip class="box-item" effect="dark" content="变更文件如：多个文件之间用英文逗号分割" :show-after="700" placement="top">
               <el-input v-model="formData.modifySuffix" placeholder="请输入变更文件" />
             </el-tooltip>
           </el-form-item>

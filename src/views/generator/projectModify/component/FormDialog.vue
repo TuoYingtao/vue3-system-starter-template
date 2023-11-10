@@ -2,22 +2,22 @@
   <el-dialog :title="title" v-model="open" width="500px" draggable append-to-body @close="onClose">
     <el-form ref="FormRef" :model="formData" :rules="rules" label-width="80px">
       <el-form-item label="项目名" prop="projectName">
-        <el-tooltip class="box-item" effect="dark" content="项目名如：glume-boot" placement="top">
+        <el-tooltip class="box-item" effect="dark" content="项目名如：glume-boot" :show-after="700" placement="top">
           <el-input v-model="formData.projectName" placeholder="请输入项目名" />
         </el-tooltip>
       </el-form-item>
       <el-form-item label="项目标识" prop="projectCode">
-        <el-tooltip class="box-item" effect="dark" content="项目标识如：glume" placement="top">
+        <el-tooltip class="box-item" effect="dark" content="项目标识如：glume" :show-after="700" placement="top">
           <el-input v-model="formData.projectCode" placeholder="请输入项目标识" />
         </el-tooltip>
       </el-form-item>
       <el-form-item label="项目包名" prop="projectPackage">
-        <el-tooltip class="box-item" effect="dark" content="项目包名如：com.glume" placement="top">
+        <el-tooltip class="box-item" effect="dark" content="项目包名如：com.glume" :show-after="700" placement="top">
           <el-input v-model="formData.projectPackage" placeholder="请输入项目包名" />
         </el-tooltip>
       </el-form-item>
       <el-form-item label="项目路径" prop="projectPath">
-        <el-tooltip class="box-item" effect="dark" content="项目源码下载路径" placement="top">
+        <el-tooltip class="box-item" effect="dark" content="项目源码下载路径" :show-after="700" placement="top">
           <el-input v-model="formData.projectPath" type="textarea" placeholder="请输入项目路径" />
         </el-tooltip>
       </el-form-item>
