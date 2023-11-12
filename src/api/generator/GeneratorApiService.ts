@@ -16,4 +16,11 @@ export class GeneratorApiService extends IServiceApi<BaseEntity, BaseEntityList<
       params: param,
     })
   }
+
+  previewCode(tableId: number) {
+    return request.get<Result<Record<string, string>>>({
+      url: '/generator/preview',
+      params: { tableId: tableId },
+    })
+  }
 }

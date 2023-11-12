@@ -1,5 +1,5 @@
 <template>
-  <el-drawer :title="title" v-model="open" :size="1500" :with-header="false">
+  <el-drawer :title="title" v-model="open" size="70%" :with-header="false">
     <el-tabs v-model="activeName" @tab-click="handleTabsClick">
       <el-tab-pane class="tabPane" label="属性设置" name="field">
         <el-table :data="attrTableData" style="width: 100%">

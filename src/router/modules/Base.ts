@@ -21,13 +21,6 @@ export default [
         hidden: false,
       },
       {
-        path: 'datasource',
-        component: () => import('@/views/generator/datasource/index.vue'),
-        name: 'Datasource',
-        meta: { title: '数据源管理', icon: 'datasource', noCache: true, affix: false },
-        hidden: false,
-      },
-      {
         path: 'project-modify',
         component: () => import('@/views/generator/projectModify/index.vue'),
         name: 'ProjectModify',
@@ -46,6 +39,13 @@ export default [
         component: () => import('@/views/generator/fieldType/index.vue'),
         name: 'FieldType',
         meta: { title: '字段类型映射', icon: 'list', noCache: true, affix: false },
+        hidden: false,
+      },
+      {
+        path: 'datasource',
+        component: () => import('@/views/generator/datasource/index.vue'),
+        name: 'Datasource',
+        meta: { title: '数据源管理', icon: 'datasource', noCache: true, affix: false },
         hidden: false,
       },
     ]
