@@ -60,12 +60,13 @@
           <span>{{ parseTime(scope.row.createTime) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" width="250" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" width="350" class-name="small-padding fixed-width">
         <template #default="scope">
+          <el-button link type="primary" icon="View" @click="handlePreviewCode(scope.row)" v-hasPermi="['*:*:*']">预览</el-button>
           <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['*:*:*']">修改</el-button>
           <el-button link type="primary" icon="Folder" @click="handleGenerator(scope.row)" v-hasPermi="['*:*:*']">生成代码</el-button>
-          <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['*:*:*']">删除</el-button>
           <el-button link type="primary" icon="Refresh" @click="handleSync(scope.row)" v-hasPermi="['*:*:*']">同步</el-button>
+          <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['*:*:*']">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -88,29 +89,33 @@
   <import-dialog ref="ImportDialogRef" title="导入数据表" :datasource-list="datasourceList" @onImportTable="onImportTable" />
   <!-- 生成弹窗 -->
   <generator-dialog ref="GeneratorDialogRef" title="生成代码" :form-data="form" :base-class-list="baseClassList" @onAmendSubmitForm="onAmendSubmitForm" @onGeneratorCode="onGeneratorCode" />
+  <!-- 预览代码 -->
+  <preview-dialog ref="PreviewDialogRef" title="预览代码" />
 </template>
 
 <script setup lang="ts" name="GeneratorCode">
 import { getCurrentInstance } from "vue";
 import * as CurrentConstants from "@/views/generator/table/constants";
 import { parseTime } from "@/utils";
-import FormDialog from "@/views/generator/table/component/FormDialog.vue";
+import { GeneratorTypeEnum } from "@/enum";
 import { TableEntity, TableField } from "@/api/generator/models/TableEntity";
+import { BaseClassEntity } from "@/api/generator/models/BaseClassEntity";
+import { DatasourceEntity } from "@/api/generator/models/DatasourceEntity";
 import { TableApiService } from "@/api/generator/TableApiService";
 import { DatasourceApiService } from "@/api/generator/DatasourceApiService";
-import { DatasourceEntity } from "@/api/generator/models/DatasourceEntity";
-import ImportDialog from "@/views/generator/table/component/ImportDialog.vue";
 import { FieldTypeApiService } from "@/api/generator/FieldTypeApiService";
-import GeneratorDialog from "@/views/generator/table/component/GeneratorDialog.vue";
 import { BaseClassApiService } from "@/api/generator/BaseClassApiService";
-import { BaseClassEntity } from "@/api/generator/models/BaseClassEntity";
 import { GeneratorApiService } from "@/api/generator/GeneratorApiService";
-import { GeneratorTypeEnum } from "@/enum";
+import ImportDialog from "@/views/generator/table/component/ImportDialog.vue";
+import GeneratorDialog from "@/views/generator/table/component/GeneratorDialog.vue";
+import FormDialog from "@/views/generator/table/component/FormDialog.vue";
+import PreviewDialog from "@/views/generator/table/component/PreviewDialog.vue";
 
 // 弹窗 Ref
 const FormDialogRef = ref();
 const ImportDialogRef = ref();
 const GeneratorDialogRef = ref();
+const PreviewDialogRef = ref();
 // @ts-ignore
 const { proxy } = getCurrentInstance();
 // data 数据
@@ -145,6 +150,8 @@ const datasourceList = ref<DatasourceEntity[]>([]);
 const typeList = ref<string[]>([]);
 // 基类列表
 const baseClassList = ref<BaseClassEntity[]>([]);
+// 预览代码
+const previewCodeMap = ref<Record<string, string>>();
 
 onMounted(() => {
   getDataList();
@@ -206,6 +213,14 @@ async function handleUpdate(row?: TableEntity) {
     proxy.$modal.msgError(e.message);
   }
 }
+
+/**
+ * 预览代码按钮操作
+ */
+const handlePreviewCode = async (row: TableEntity) => {
+  const { data } = await generatorApi.previewCode(row.id as number);
+  previewCodeMap.value = data;
+};
 
 /** 生成代码按钮操作 */
 const handleGenerator = async (row?: TableEntity) => {
