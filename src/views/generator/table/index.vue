@@ -90,7 +90,7 @@
   <!-- 生成弹窗 -->
   <generator-dialog ref="GeneratorDialogRef" title="生成代码" :form-data="form" :base-class-list="baseClassList" @onAmendSubmitForm="onAmendSubmitForm" @onGeneratorCode="onGeneratorCode" />
   <!-- 预览代码 -->
-  <preview-dialog ref="PreviewDialogRef" title="预览代码" />
+  <preview-dialog ref="PreviewDialogRef" title="预览代码" :preview-code-map="previewCodeMap" />
 </template>
 
 <script setup lang="ts" name="GeneratorCode">
@@ -218,8 +218,13 @@ async function handleUpdate(row?: TableEntity) {
  * 预览代码按钮操作
  */
 const handlePreviewCode = async (row: TableEntity) => {
-  const { data } = await generatorApi.previewCode(row.id as number);
-  previewCodeMap.value = data;
+  try {
+    const { data } = await generatorApi.previewCode(row.id as number);
+    previewCodeMap.value = data;
+    PreviewDialogRef.value.onOpen();
+  } catch (e: any) {
+    proxy.$modal.msgError(e.message);
+  }
 };
 
 /** 生成代码按钮操作 */

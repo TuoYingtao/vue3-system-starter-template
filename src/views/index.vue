@@ -941,52 +941,16 @@
         </el-card>
       </el-col>
     </el-row>
-    <div v-for="(value, key) in dataMap" :key="key">
-      <pre><code class="hljs" v-html="highlightedCode(value, key)"></code></pre>
-    </div>
   </div>
 </template>
 
 <script setup name="Index">
-import { GeneratorApiService } from "@/api/generator/GeneratorApiService";
-import hljs from "highlight.js/lib/highlight";
-import "highlight.js/styles/github-gist.css";
-import java from "highlight.js/lib/languages/java";
-import xml from "highlight.js/lib/languages/xml";
-import javascript from "highlight.js/lib/languages/javascript";
-import typescript from "highlight.js/lib/languages/typescript";
-import sql from "highlight.js/lib/languages/sql";
-
-hljs.registerLanguage("java", java);
-hljs.registerLanguage("xml", xml);
-hljs.registerLanguage("html",xml);
-hljs.registerLanguage("vue", xml);
-hljs.registerLanguage("javascript", javascript);
-hljs.registerLanguage("typescript", typescript);
-hljs.registerLanguage("sql", sql);
-
 const version = ref('3.8.6')
 
 const checkboxList = ref()
 
 function goTarget(url) {
   window.open(url, '__blank')
-}
-
-const generatorApi = new GeneratorApiService();
-const dataMap = ref({});
-const getPreviewCode = async () => {
-  const { data } = await generatorApi.previewCode(1);
-  dataMap.value = data;
-}
-getPreviewCode();
-
-/** 高亮显示 */
-function highlightedCode(code, key) {
-  const vmName = key.substring(key.lastIndexOf("/") + 1, key.indexOf(".ftl"));
-  var language = vmName.substring(vmName.indexOf(".") + 1, vmName.length);
-  const result = hljs.highlight(language, code || "", true);
-  return result.value || '&nbsp;';
 }
 </script>
 

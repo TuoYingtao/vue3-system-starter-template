@@ -82,3 +82,8 @@ export interface ImportProps {
   title: string;
   datasourceList: DatasourceEntity[];
 }
+
+export interface PreviewProps {
+  title: string;
+  previewCodeMap: Record<string, string>;
+}
