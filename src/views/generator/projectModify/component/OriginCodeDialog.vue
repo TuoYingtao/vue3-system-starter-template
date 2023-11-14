@@ -136,6 +136,7 @@ const onClose = () => {
  */
 const resetForm = () => {
   FormRef.value.resetFields();
+  FormRef.value.clearValidate();
   props.formData.id = -1;
 };
 defineExpose({ onOpen, onClose, resetForm })
