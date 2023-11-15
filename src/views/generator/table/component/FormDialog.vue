@@ -59,6 +59,16 @@
               </el-select>
             </template>
           </el-table-column>
+          <el-table-column align="center" label="主键" prop="primaryPk">
+            <template #default="{ row }">
+              <el-checkbox v-model="row.primaryPk" />
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-tab-pane>
+      <el-tab-pane label="属性功能" name="fun">
+        <el-table :data="attrTableData" style="width: 100%">
+          <el-table-column align="center" label="属性名" prop="attrName"/>
           <el-table-column align="center" label="自动填充" prop="autoFill">
             <template #default="{ row }">
               <el-select v-model="row.autoFill" placeholder="选择自动填充">
@@ -66,9 +76,25 @@
               </el-select>
             </template>
           </el-table-column>
-          <el-table-column align="center" label="主键" prop="primaryPk">
+          <el-table-column align="center" label="日期填充" prop="dateFormat">
             <template #default="{ row }">
-              <el-checkbox v-model="row.primaryPk" />
+              <el-select v-model="row.dateFill" placeholder="选择日期格式">
+                <el-option v-for="item in dateFills" :key="item.value" :label="item.label" :value="item.value"/>
+              </el-select>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="日期格式" prop="dateFormat">
+            <template #default="{ row }">
+              <el-select v-model="row.dateFormat" placeholder="选择日期格式">
+                <el-option v-for="item in dateFormats" :key="item.value" :label="item.label" :value="item.value"/>
+              </el-select>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="时区" prop="dateFormat">
+            <template #default="{ row }">
+              <el-select v-model="row.timeZone" placeholder="选择时区">
+                <el-option v-for="item in timeZones" :key="item.value" :label="item.label" :value="item.value"/>
+              </el-select>
             </template>
           </el-table-column>
         </el-table>
@@ -189,7 +215,7 @@ import { TableEntity, TableField } from "@/api/generator/models/TableEntity";
 
 const emit = defineEmits([]);
 // 常量
-const { form, rules, fill, formType, query } = DATA;
+const { form, rules, fill, dateFills, dateFormats, timeZones, formType, query } = DATA;
 // 打开弹窗状态
 const open = ref(false);
 const props: Props = withDefaults(defineProps<Props>(), {

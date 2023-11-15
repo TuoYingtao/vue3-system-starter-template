@@ -8,6 +8,9 @@ interface IData {
   queryParams: Record<string, any>;
   rules: FormRules;
   fill: Record<string, string>[];
+  dateFills: Record<string, string>[];
+  dateFormats: Record<string, string>[];
+  timeZones: Record<string, string>[];
   query: Record<string, string>[];
   formType: Record<string, string>[];
 }
@@ -29,6 +32,9 @@ export const DEFAULT_FORM: TableEntity = {
   tableName: '',
   version: '',
   baseclassId: 0,
+  controllerBaseclassId: 0,
+  serviceBaseclassId: 0,
+  serviceImplBaseclassId: 0,
   fieldList: [],
 }
 
@@ -39,6 +45,13 @@ export const DATA: IData = {
     limit: 10,
   },
   rules: {
+    className: [{ required: true, message: "类名不能为空", trigger: "blur" }],
+    moduleName: [{ required: true, message: "模块名不能为空", trigger: "blur" }],
+    functionName: [{ required: true, message: "功能名不能为空", trigger: "blur" }],
+    packageName: [{ required: true, message: "项目包名不能为空", trigger: "blur" }],
+    version: [{ required: true, message: "版本号不能为空", trigger: "blur" }],
+    backendPath: [{ required: true, message: "后端生成路径不能为空", trigger: "blur" }],
+    frontendPath: [{ required: true, message: "前端生成路径不能为空", trigger: "blur" }],
     columnType: [{ required: true, message: "字段类型不能为空", trigger: "blur" }],
     attrType: [{ required: true, message: "属性类型不能为空", trigger: "blur" }],
   },
@@ -47,6 +60,31 @@ export const DATA: IData = {
     { label: 'INSERT', value: 'INSERT' },
     { label: 'UPDATE', value: 'UPDATE' },
     { label: 'INSERT_UPDATE', value: 'INSERT_UPDATE' }
+  ],
+  dateFills: [
+    { label: 'DEFAULT', value: 'DEFAULT' },
+    { label: 'JSON_FORMAT', value: 'JSON_FORMAT' },
+    { label: 'DATE_FORMAT', value: 'DATE_FORMAT' },
+    { label: 'JSON_DATE_FORMAT', value: 'JSON_DATE_FORMAT' },
+  ],
+  dateFormats: [
+    { label: 'yyyy-MM-dd HH:mm:ss', value: 'yyyy-MM-dd HH:mm:ss' },
+    { label: 'yyyy/MM/dd HH:mm:ss', value: 'yyyy/MM/dd HH:mm:ss' },
+    { label: 'yyyy.MM.dd HH:mm:ss', value: 'yyyy.MM.dd HH:mm:ss' },
+    { label: 'yyyy-MM-dd HH:mm', value: 'yyyy-MM-dd HH:mm' },
+    { label: 'yyyy/MM/dd HH:mm', value: 'yyyy/MM/dd HH:mm' },
+    { label: 'yyyy.MM.dd HH:mm', value: 'yyyy.MM.dd HH:mm' },
+    { label: 'yyyy-MM-dd', value: 'yyyy-MM-dd' },
+    { label: 'yyyy/MM/dd', value: 'yyyy/MM/dd' },
+    { label: 'yyyy.MM.dd', value: 'yyyy.MM.dd' },
+    { label: 'yyyy-MM', value: 'yyyy-MM' },
+    { label: 'yyyy/MM', value: 'yyyy/MM' },
+    { label: 'yyyy.MM', value: 'yyyy.MM' },
+  ],
+  timeZones: [
+    { label: 'GMT+8', value: 'GMT+8' },
+    { label: 'GMT', value: 'GMT' },
+    { label: 'UTC', value: 'UTC' },
   ],
   query: [
     { label: '=', value: '=' },

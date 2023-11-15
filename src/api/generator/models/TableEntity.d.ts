@@ -15,12 +15,18 @@ export interface TableEntity extends BaseEntity {
   tableName: string;
   version: string;
   baseclassId?: number;
+  controllerBaseclassId?: number;
+  serviceBaseclassId?: number;
+  serviceImplBaseclassId?: number;
   fieldList?: TableField[];
 }
 export interface TableField extends BaseEntity {
   attrName: string;
   attrType: string;
   autoFill: string;
+  dateFill: string;
+  dateFormat: string;
+  timeZone: string;
   baseField: boolean;
   fieldComment: string;
   fieldName: string;
