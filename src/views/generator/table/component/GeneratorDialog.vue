@@ -2,7 +2,7 @@
   <el-dialog :title="title" v-model="open" width="800px" draggable append-to-body @close="onClose">
     <el-form ref="FormRef" :model="formData" :rules="rules" label-width="120px">
       <el-row :gutter="20">
-        <el-col :span="24">
+        <el-col :span="12">
           <el-form-item label="表名" prop="tableName">
             <el-tooltip class="box-item" effect="dark" content="表名" :show-after="700" placement="top">
               <el-input v-model="formData.tableName" disabled placeholder="请输入表名" />
@@ -27,36 +27,6 @@
           <el-form-item label="继承" prop="baseclassId">
             <el-tooltip class="box-item" effect="dark" content="继承" :show-after="700" placement="top">
               <el-select style="width: 100%;" v-model="formData.baseclassId" clearable placeholder="选择继承">
-                <el-option label="不继承" :value="-99"/>
-                <el-option v-for="item in baseClassList" :key="item.id" :label="item.code" :value="item.id"/>
-              </el-select>
-            </el-tooltip>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="控制层继承" prop="controllerBaseclassId">
-            <el-tooltip class="box-item" effect="dark" content="控制层继承" :show-after="700" placement="top">
-              <el-select style="width: 100%;" v-model="formData.controllerBaseclassId" clearable placeholder="选择控制层继承">
-                <el-option label="不继承" :value="-99"/>
-                <el-option v-for="item in baseClassList" :key="item.id" :label="item.code" :value="item.id"/>
-              </el-select>
-            </el-tooltip>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="业务层继承" prop="serviceBaseclassId">
-            <el-tooltip class="box-item" effect="dark" content="业务层继承" :show-after="700" placement="top">
-              <el-select style="width: 100%;" v-model="formData.serviceBaseclassId" clearable placeholder="选择业务层继承">
-                <el-option label="不继承" :value="-99"/>
-                <el-option v-for="item in baseClassList" :key="item.id" :label="item.code" :value="item.id"/>
-              </el-select>
-            </el-tooltip>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="业务层实现继承" prop="serviceImplBaseclassId">
-            <el-tooltip class="box-item" effect="dark" content="业务层实现继承" :show-after="700" placement="top">
-              <el-select style="width: 100%;" v-model="formData.serviceImplBaseclassId" clearable placeholder="选择业务层实现继承">
                 <el-option label="不继承" :value="-99"/>
                 <el-option v-for="item in baseClassList" :key="item.id" :label="item.code" :value="item.id"/>
               </el-select>
@@ -102,6 +72,23 @@
           <el-form-item label="作者邮箱" prop="email">
             <el-tooltip class="box-item" effect="dark" content="作者邮箱" :show-after="700" placement="top">
               <el-input v-model="formData.email" placeholder="请输入作者邮箱" />
+            </el-tooltip>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="工具包路径" prop="commonPackagePath">
+            <el-tooltip class="box-item" effect="dark" content="工具包路径：com.project.common" :show-after="700" placement="top">
+              <el-input v-model="formData.commonPackagePath" placeholder="请输入工具包路径" />
+            </el-tooltip>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="业务架构继承" prop="enableBaseService">
+            <el-tooltip class="box-item" effect="dark" content="三层架构继承" :show-after="700" placement="top">
+              <el-radio-group v-model="formData.enableBaseService">
+                <el-radio :label="0">继承</el-radio>
+                <el-radio :label="1">不继承</el-radio>
+              </el-radio-group>
             </el-tooltip>
           </el-form-item>
         </el-col>

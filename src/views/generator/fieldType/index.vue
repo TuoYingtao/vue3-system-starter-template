@@ -157,7 +157,7 @@ async function getDataList() {
 
 /** 删除按钮操作 */
 function handleDelete(row?: FieldTypeEntity) {
-  const params = [row!.id] || ids.value;
+  const params = row ? [row!.id] : ids.value;
   proxy.$modal.confirm('是否确认删除编号为"' + params + '"的数据项？').then(function () {
     return serviceApi.delete(params);
   }).then(() => {

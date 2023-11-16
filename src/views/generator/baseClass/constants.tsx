@@ -23,7 +23,6 @@ export const DATA: IData = {
   },
   rules: {
     code: [{ required: true, message: "基类编码不能为空", trigger: "blur" }],
-    fields: [{ required: true, message: "字段不能为空", trigger: "blur" }],
     packageName: [{ required: true, message: "包名不能为空", trigger: "blur" }]
   }
 }

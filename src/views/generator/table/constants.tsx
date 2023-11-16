@@ -32,9 +32,8 @@ export const DEFAULT_FORM: TableEntity = {
   tableName: '',
   version: '',
   baseclassId: 0,
-  controllerBaseclassId: 0,
-  serviceBaseclassId: 0,
-  serviceImplBaseclassId: 0,
+  enableBaseService: 0,
+  commonPackagePath: '',
   fieldList: [],
 }
 

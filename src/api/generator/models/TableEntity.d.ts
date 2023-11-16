@@ -15,9 +15,8 @@ export interface TableEntity extends BaseEntity {
   tableName: string;
   version: string;
   baseclassId?: number;
-  controllerBaseclassId?: number;
-  serviceBaseclassId?: number;
-  serviceImplBaseclassId?: number;
+  enableBaseService: number;
+  commonPackagePath: string;
   fieldList?: TableField[];
 }
 export interface TableField extends BaseEntity {
