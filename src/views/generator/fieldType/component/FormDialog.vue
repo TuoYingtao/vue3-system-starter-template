@@ -1,20 +1,29 @@
 <template>
   <el-dialog :title="title" v-model="open" width="500px" draggable append-to-body @close="onClose">
-    <el-form ref="FormRef" :model="formData" :rules="rules" label-width="80px">
-      <el-form-item label="字段类型" prop="columnType">
-        <el-tooltip class="box-item" effect="dark" content="字段类型如：int2" :show-after="700" placement="top">
-          <el-input v-model="formData.columnType" placeholder="请输入字段类型" />
-        </el-tooltip>
+    <el-form ref="FormRef" :model="formData" :rules="rules" label-width="100px">
+      <el-form-item prop="columnType">
+        <template #label>
+          <el-tooltip class="box-item" effect="dark" content="字段类型" :show-after="700" placement="top">
+            <div class="flex justify-center items-center">字段类型<el-icon><QuestionFilled /></el-icon></div>
+          </el-tooltip>
+        </template>
+        <el-input v-model="formData.columnType" placeholder="请输入字段类型" />
       </el-form-item>
-      <el-form-item label="属性类型" prop="attrType">
-        <el-tooltip class="box-item" effect="dark" content="属性类型如：Integer" :show-after="700" placement="top">
-          <el-input v-model="formData.attrType" placeholder="请输入属性类型" />
-        </el-tooltip>
+      <el-form-item prop="attrType">
+        <template #label>
+          <el-tooltip class="box-item" effect="dark" content="属性类型如：Integer" :show-after="700" placement="top">
+            <div class="flex justify-center items-center">属性类型<el-icon><QuestionFilled /></el-icon></div>
+          </el-tooltip>
+        </template>
+        <el-input v-model="formData.attrType" placeholder="请输入属性类型" />
       </el-form-item>
-      <el-form-item label="属性包名" prop="packageName">
-        <el-tooltip class="box-item" effect="dark" content="基类所在的包名路径" :show-after="700" placement="top">
-          <el-input v-model="formData.packageName" placeholder="请输入属性包名" />
-        </el-tooltip>
+      <el-form-item prop="packageName">
+        <template #label>
+          <el-tooltip class="box-item" effect="dark" content="基类所在的包名路径" :show-after="700" placement="top">
+            <div class="flex justify-center items-center">属性包名<el-icon><QuestionFilled /></el-icon></div>
+          </el-tooltip>
+        </template>
+        <el-input v-model="formData.packageName" placeholder="请输入属性包名" />
       </el-form-item>
     </el-form>
     <template #footer>

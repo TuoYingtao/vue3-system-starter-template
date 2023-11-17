@@ -4,126 +4,164 @@
       <el-row :gutter="20">
         <el-col :span="12">
           <el-form-item label="表名" prop="tableName">
-            <el-tooltip class="box-item" effect="dark" content="表名" :show-after="700" placement="top">
-              <el-input v-model="formData.tableName" disabled placeholder="请输入表名" />
-            </el-tooltip>
+            <el-input v-model="formData.tableName" disabled placeholder="请输入表名" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="说明" prop="tableComment">
-            <el-tooltip class="box-item" effect="dark" content="说明" :show-after="700" placement="top">
-              <el-input v-model="formData.tableComment" placeholder="请输入说明" />
-            </el-tooltip>
+            <el-input v-model="formData.tableComment" placeholder="请输入说明" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="类名" prop="className">
-            <el-tooltip class="box-item" effect="dark" content="类名如：UserEntity" :show-after="700" placement="top">
-              <el-input v-model="formData.className" placeholder="请输入类名" />
-            </el-tooltip>
+          <el-form-item prop="className">
+            <template #label>
+              <el-tooltip class="box-item" effect="dark" content="类名如：UserEntity" :show-after="700" placement="top">
+                <div class="flex justify-center items-center">类名<el-icon><QuestionFilled /></el-icon></div>
+              </el-tooltip>
+            </template>
+            <el-input v-model="formData.className" placeholder="请输入类名" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="继承" prop="baseclassId">
-            <el-tooltip class="box-item" effect="dark" content="继承" :show-after="700" placement="top">
-              <el-select style="width: 100%;" v-model="formData.baseclassId" clearable placeholder="选择继承">
-                <el-option label="不继承" :value="-99"/>
-                <el-option v-for="item in baseClassList" :key="item.id" :label="item.code" :value="item.id"/>
-              </el-select>
-            </el-tooltip>
+          <el-form-item prop="baseclassId">
+            <template #label>
+              <el-tooltip class="box-item" effect="dark" content="实体类继承的基类" :show-after="700" placement="top">
+                <div class="flex justify-center items-center">继承<el-icon><QuestionFilled /></el-icon></div>
+              </el-tooltip>
+            </template>
+            <el-select style="width: 100%;" v-model="formData.baseclassId" clearable placeholder="选择继承">
+              <el-option label="不继承" :value="-99"/>
+              <el-option v-for="item in baseClassList" :key="item.id" :label="item.code" :value="item.id"/>
+            </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="模块名" prop="moduleName">
-            <el-tooltip class="box-item" effect="dark" content="模块名如：Glume" :show-after="700" placement="top">
-              <el-input v-model="formData.moduleName" placeholder="请输入模块名" />
-            </el-tooltip>
+          <el-form-item prop="moduleName">
+            <template #label>
+              <el-tooltip class="box-item" effect="dark" content="当前的表输入那个业务模块如：user" :show-after="700" placement="top">
+                <div class="flex justify-center items-center">模块名<el-icon><QuestionFilled /></el-icon></div>
+              </el-tooltip>
+            </template>
+            <el-input v-model="formData.moduleName" placeholder="请输入模块名" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="功能名" prop="functionName">
-            <el-tooltip class="box-item" effect="dark" content="功能名如：member" :show-after="700" placement="top">
-              <el-input v-model="formData.functionName" placeholder="请输入功能名" />
-            </el-tooltip>
+          <el-form-item prop="functionName">
+            <template #label>
+              <el-tooltip class="box-item" effect="dark" content="功能名将使用在：路由、权限、api地址" :show-after="700" placement="top">
+                <div class="flex justify-center items-center">功能名<el-icon><QuestionFilled /></el-icon></div>
+              </el-tooltip>
+            </template>
+            <el-input v-model="formData.functionName" placeholder="请输入功能名" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="项目包名" prop="packageName">
-            <el-tooltip class="box-item" effect="dark" content="项目包名如：com.project.net" :show-after="700" placement="top">
-              <el-input v-model="formData.packageName" placeholder="请输入项目包名" />
-            </el-tooltip>
+          <el-form-item prop="packageName">
+            <template #label>
+              <el-tooltip class="box-item" effect="dark" content="项目包名：com.project.net" :show-after="700" placement="top">
+                <div class="flex justify-center items-center">项目包名<el-icon><QuestionFilled /></el-icon></div>
+              </el-tooltip>
+            </template>
+            <el-input v-model="formData.packageName" placeholder="请输入项目包名" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="版本号" prop="version">
-            <el-tooltip class="box-item" effect="dark" content="版本号如：1.0.0" :show-after="700" placement="top">
-              <el-input v-model="formData.version" placeholder="请输入版本号" />
-            </el-tooltip>
+          <el-form-item prop="version">
+            <template #label>
+              <el-tooltip class="box-item" effect="dark" content="版本号" :show-after="700" placement="top">
+                <div class="flex justify-center items-center">版本号<el-icon><QuestionFilled /></el-icon></div>
+              </el-tooltip>
+            </template>
+            <el-input v-model="formData.version" placeholder="请输入版本号" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="默认作者" prop="author">
-            <el-tooltip class="box-item" effect="dark" content="默认作者如：TuoYingtao" :show-after="700" placement="top">
-              <el-input v-model="formData.author" placeholder="请输入默认作者" />
-            </el-tooltip>
+          <el-form-item prop="author">
+            <template #label>
+              <el-tooltip class="box-item" effect="dark" content="默认作者" :show-after="700" placement="top">
+                <div class="flex justify-center items-center">默认作者<el-icon><QuestionFilled /></el-icon></div>
+              </el-tooltip>
+            </template>
+            <el-input v-model="formData.author" placeholder="请输入默认作者" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="作者邮箱" prop="email">
-            <el-tooltip class="box-item" effect="dark" content="作者邮箱" :show-after="700" placement="top">
-              <el-input v-model="formData.email" placeholder="请输入作者邮箱" />
-            </el-tooltip>
+          <el-form-item prop="email">
+            <template #label>
+              <el-tooltip class="box-item" effect="dark" content="作者邮箱" :show-after="700" placement="top">
+                <div class="flex justify-center items-center">作者邮箱<el-icon><QuestionFilled /></el-icon></div>
+              </el-tooltip>
+            </template>
+            <el-input v-model="formData.email" placeholder="请输入作者邮箱" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="工具包路径" prop="commonPackagePath">
-            <el-tooltip class="box-item" effect="dark" content="工具包路径：com.project.common" :show-after="700" placement="top">
-              <el-input v-model="formData.commonPackagePath" placeholder="请输入工具包路径" />
-            </el-tooltip>
+          <el-form-item prop="commonPackagePath">
+            <template #label>
+              <el-tooltip class="box-item" effect="dark" content="工具包路径一般是项目包名+模块名如：com.project.net.user" :show-after="700" placement="top">
+                <div class="flex justify-center items-center">工具包路径<el-icon><QuestionFilled /></el-icon></div>
+              </el-tooltip>
+            </template>
+            <el-input v-model="formData.commonPackagePath" placeholder="请输入工具包路径" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="业务架构继承" prop="enableBaseService">
-            <el-tooltip class="box-item" effect="dark" content="三层架构继承" :show-after="700" placement="top">
-              <el-radio-group v-model="formData.enableBaseService">
-                <el-radio :label="0">继承</el-radio>
-                <el-radio :label="1">不继承</el-radio>
-              </el-radio-group>
-            </el-tooltip>
+          <el-form-item prop="enableBaseService">
+            <template #label>
+              <el-tooltip class="box-item" effect="dark" content="三层架构是否继承基类" :show-after="700" placement="top">
+                <div class="flex justify-center items-center">业务架构继承<el-icon><QuestionFilled /></el-icon></div>
+              </el-tooltip>
+            </template>
+            <el-radio-group v-model="formData.enableBaseService">
+              <el-radio :label="0">继承</el-radio>
+              <el-radio :label="1">不继承</el-radio>
+            </el-radio-group>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="生成方式" prop="generatorType">
-            <el-tooltip class="box-item" effect="dark" content="生成方式" :show-after="700" placement="top">
-              <el-radio-group v-model="formData.generatorType">
-                <el-radio :label="GeneratorTypeEnum.ZIP">zip压缩包</el-radio>
-                <el-radio :label="GeneratorTypeEnum.CUSTOM_PATH">自定义路径</el-radio>
-              </el-radio-group>
-            </el-tooltip>
+          <el-form-item prop="generatorType">
+            <template #label>
+              <el-tooltip class="box-item" effect="dark" content="生成方式" :show-after="700" placement="top">
+                <div class="flex justify-center items-center">生成方式<el-icon><QuestionFilled /></el-icon></div>
+              </el-tooltip>
+            </template>
+            <el-radio-group v-model="formData.generatorType">
+              <el-radio :label="GeneratorTypeEnum.ZIP">zip压缩包</el-radio>
+              <el-radio :label="GeneratorTypeEnum.CUSTOM_PATH">自定义路径</el-radio>
+            </el-radio-group>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="表单布局" prop="formLayout">
-            <el-tooltip class="box-item" effect="dark" content="表单布局" :show-after="700" placement="top">
-              <el-radio-group v-model="formData.formLayout">
-                <el-radio :label="FormLayoutEnum.ONE_ROW">一列</el-radio>
-                <el-radio :label="FormLayoutEnum.TWO_ROW">两列</el-radio>
-              </el-radio-group>
-            </el-tooltip>
+          <el-form-item prop="formLayout">
+            <template #label>
+              <el-tooltip class="box-item" effect="dark" content="生成方式" :show-after="700" placement="top">
+                <div class="flex justify-center items-center">表单布局<el-icon><QuestionFilled /></el-icon></div>
+              </el-tooltip>
+            </template>
+            <el-radio-group v-model="formData.formLayout">
+              <el-radio :label="FormLayoutEnum.ONE_ROW">一列</el-radio>
+              <el-radio :label="FormLayoutEnum.TWO_ROW">两列</el-radio>
+            </el-radio-group>
           </el-form-item>
         </el-col>
         <el-col :span="24" v-show="formData.generatorType === GeneratorTypeEnum.CUSTOM_PATH">
-          <el-form-item label="后端生成路径" prop="backendPath">
-            <el-tooltip class="box-item" effect="dark" content="后端生成路径" :show-after="700" placement="top">
-              <el-input v-model="formData.backendPath" placeholder="请输入后端生成路径" />
-            </el-tooltip>
+          <el-form-item prop="backendPath">
+            <template #label>
+              <el-tooltip class="box-item" effect="dark" content="后端生成路径" :show-after="700" placement="top">
+                <div class="flex justify-center items-center">后端生成路径<el-icon><QuestionFilled /></el-icon></div>
+              </el-tooltip>
+            </template>
+            <el-input v-model="formData.backendPath" placeholder="请输入后端生成路径" />
           </el-form-item>
         </el-col>
         <el-col :span="24" v-show="formData.generatorType === GeneratorTypeEnum.CUSTOM_PATH">
-          <el-form-item label="前端生成路径" prop="frontendPath">
-            <el-tooltip class="box-item" effect="dark" content="前端生成路径" :show-after="700" placement="top">
-              <el-input v-model="formData.frontendPath" placeholder="请输入前端生成路径" />
-            </el-tooltip>
+          <el-form-item prop="frontendPath">
+            <template #label>
+              <el-tooltip class="box-item" effect="dark" content="前端生成路径" :show-after="700" placement="top">
+                <div class="flex justify-center items-center">前端生成路径<el-icon><QuestionFilled /></el-icon></div>
+              </el-tooltip>
+            </template>
+            <el-input v-model="formData.frontendPath" placeholder="请输入前端生成路径" />
           </el-form-item>
         </el-col>
       </el-row>

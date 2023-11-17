@@ -1,32 +1,47 @@
 <template>
   <el-dialog :title="title" v-model="open" width="500px" draggable append-to-body @close="onClose">
     <el-form ref="FormRef" :model="formData" :rules="rules" label-width="90px">
-      <el-form-item label="连接名" prop="connName">
-        <el-tooltip class="box-item" effect="dark" content="连接名如：generator" :show-after="700" placement="top">
-          <el-input v-model="formData.connName" placeholder="请输入连接名" />
-        </el-tooltip>
+      <el-form-item prop="connName">
+        <template #label>
+          <el-tooltip class="box-item" effect="dark" content="连接名如：generator" :show-after="700" placement="top">
+            <div class="flex justify-center items-center">连接名<el-icon><QuestionFilled /></el-icon></div>
+          </el-tooltip>
+        </template>
+        <el-input v-model="formData.connName" placeholder="请输入连接名" />
       </el-form-item>
-      <el-form-item label="数据库类型" prop="dbType">
-        <el-tooltip class="box-item" effect="dark" content="数据库类型如：MySQL" :show-after="700" placement="top">
-          <el-select v-model="formData.dbType" style="width: 100%" placeholder="请输入数据库类型">
-            <el-option v-for="item in dbTypeOptions" :key="item.id" :label="item.label" :value="item.label" />
-          </el-select>
-        </el-tooltip>
+      <el-form-item prop="dbType">
+        <template #label>
+          <el-tooltip class="box-item" effect="dark" content="数据库类型如：MySQL" :show-after="700" placement="top">
+            <div class="flex justify-center items-center">数据库类型<el-icon><QuestionFilled /></el-icon></div>
+          </el-tooltip>
+        </template>
+        <el-select v-model="formData.dbType" style="width: 100%" placeholder="请输入数据库类型">
+          <el-option v-for="item in dbTypeOptions" :key="item.id" :label="item.label" :value="item.label" />
+        </el-select>
       </el-form-item>
-      <el-form-item label="数据库URL" prop="connUrl">
-        <el-tooltip class="box-item" effect="dark" content="数据库URL" :show-after="700" placement="top">
-          <el-input v-model="formData.connUrl" placeholder="请输入数据库URL" />
-        </el-tooltip>
+      <el-form-item prop="connUrl">
+        <template #label>
+          <el-tooltip class="box-item" effect="dark" content="数据库URL" :show-after="700" placement="top">
+            <div class="flex justify-center items-center">数据库URL<el-icon><QuestionFilled /></el-icon></div>
+          </el-tooltip>
+        </template>
+        <el-input v-model="formData.connUrl" placeholder="请输入数据库URL" />
       </el-form-item>
-      <el-form-item label="用户名" prop="username">
-        <el-tooltip class="box-item" effect="dark" content="用户名" :show-after="700" placement="top">
-          <el-input v-model="formData.username" placeholder="请输入用户名" />
-        </el-tooltip>
+      <el-form-item prop="username">
+        <template #label>
+          <el-tooltip class="box-item" effect="dark" content="用户名" :show-after="700" placement="top">
+            <div class="flex justify-center items-center">用户名<el-icon><QuestionFilled /></el-icon></div>
+          </el-tooltip>
+        </template>
+        <el-input v-model="formData.username" placeholder="请输入用户名" />
       </el-form-item>
-      <el-form-item label="密码" prop="password">
-        <el-tooltip class="box-item" effect="dark" content="密码" :show-after="700" placement="top">
-          <el-input v-model="formData.password" placeholder="请输入密码" />
-        </el-tooltip>
+      <el-form-item prop="password">
+        <template #label>
+          <el-tooltip class="box-item" effect="dark" content="密码" :show-after="700" placement="top">
+            <div class="flex justify-center items-center">密码<el-icon><QuestionFilled /></el-icon></div>
+          </el-tooltip>
+        </template>
+        <el-input v-model="formData.password" placeholder="请输入密码" />
       </el-form-item>
     </el-form>
     <template #footer>
