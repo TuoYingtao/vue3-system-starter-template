@@ -23,8 +23,8 @@ declare global {
 
   /** 基本实体类型 */
   interface BaseEntity {
-    createTime?: number;
-    updateTime?: number;
+    createTime?: unknown;
+    updateTime?: unknown;
     [key: string]: any;
   }
 

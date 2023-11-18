@@ -6,4 +6,5 @@ export interface BaseClassEntity extends BaseEntity {
   code: string;
   fields: string;
   remark: string;
+  aa: unknown
 }

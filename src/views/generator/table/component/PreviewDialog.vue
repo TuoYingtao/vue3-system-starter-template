@@ -64,7 +64,7 @@ watch(() => props.previewCodeMap, (newVal) => {
 /** 高亮显示 */
 function highlightedCode(code: string, key: string) {
   const vmName = key.substring(key.lastIndexOf("/") + 1, key.indexOf(".ftl"));
-  var language = vmName.substring(vmName.indexOf(".") + 1, vmName.length);
+  var language = vmName.split(".").pop();
   const result = hljs.highlight(language, code || "", true);
   return result.value || '&nbsp;';
 }
