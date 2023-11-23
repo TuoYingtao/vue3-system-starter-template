@@ -1,6 +1,6 @@
 <template>
   <div :class="classObj" class="app-wrapper" :style="{ '--current-color': theme }">
-    <div v-if="device === 'mobile' && sidebar.opened" class="drawer-bg" @click="handleClickOutside"/>
+    <div v-if="device === 'mobile' && sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
     <Sidebar v-if="!sidebar.hide" class="sidebar-container" />
     <div :class="{ hasTagsView: needTagsView, sidebarHide: sidebar.hide }" class="main-container">
       <div :class="{ 'fixed-header': fixedHeader }">
@@ -8,20 +8,21 @@
         <tags-view v-if="needTagsView" />
       </div>
       <app-main />
+      <div class="copyright flex justify-center items-center">{{ COPYRIGHT_INFO }}</div>
       <Settings ref="settingRef" />
     </div>
   </div>
 </template>
 
 <script setup>
-import { useWindowSize } from '@vueuse/core'
-import { AppMain, Navbar, Settings, TagsView, Sidebar } from './components'
-import defaultSettings from '@/settings'
+import { useWindowSize } from '@vueuse/core';
+import { AppMain, Navbar, Settings, TagsView, Sidebar } from './components';
 
-import useAppStore from '@/stores/modules/app'
-import useSettingsStore from '@/stores/modules/settings'
+import useAppStore from '@/stores/modules/app';
+import useSettingsStore from '@/stores/modules/settings';
+import { COPYRIGHT_INFO } from '@/config/global';
 
-const settingsStore = useSettingsStore()
+const settingsStore = useSettingsStore();
 const theme = computed(() => settingsStore.theme);
 const sideTheme = computed(() => settingsStore.sideTheme);
 const sidebar = computed(() => useAppStore().sidebar);
@@ -33,26 +34,26 @@ const classObj = computed(() => ({
   hideSidebar: !sidebar.value.opened,
   openSidebar: sidebar.value.opened,
   withoutAnimation: sidebar.value.withoutAnimation,
-  mobile: device.value === 'mobile'
-}))
+  mobile: device.value === 'mobile',
+}));
 // 响应式窗口大小
 const { width, height } = useWindowSize();
 const WIDTH = 992; // refer to Bootstrap's responsive design
 
 watchEffect(() => {
   if (device.value === 'mobile' && sidebar.value.opened) {
-    useAppStore().closeSideBar({ withoutAnimation: false })
+    useAppStore().closeSideBar({ withoutAnimation: false });
   }
   if (width.value - 1 < WIDTH) {
-    useAppStore().toggleDevice('mobile')
-    useAppStore().closeSideBar({ withoutAnimation: true })
+    useAppStore().toggleDevice('mobile');
+    useAppStore().closeSideBar({ withoutAnimation: true });
   } else {
-    useAppStore().toggleDevice('desktop')
+    useAppStore().toggleDevice('desktop');
   }
-})
+});
 
 function handleClickOutside() {
-  useAppStore().closeSideBar({ withoutAnimation: false })
+  useAppStore().closeSideBar({ withoutAnimation: false });
 }
 
 const settingRef = ref(null);
@@ -62,8 +63,8 @@ function setLayout() {
 </script>
 
 <style lang="scss" scoped>
-  @import "@/assets/styles/mixin.scss";
-  @import "@/assets/styles/variables.module.scss";
+@import '@/assets/styles/mixin.scss';
+@import '@/assets/styles/variables.module.scss';
 
 .app-wrapper {
   @include clearfix;
@@ -106,5 +107,12 @@ function setLayout() {
 
 .mobile .fixed-header {
   width: 100%;
+}
+
+.copyright {
+  height: 35px;
+  line-height: 35px;
+  font-size: 14px;
+  color: rgb(0, 0, 0, 0.4);
 }
 </style>

@@ -1,16 +1,33 @@
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 declare global {
-
   /** 请求参数类型 */
-  type Params = number | string | boolean | Record<string, any> | Recordable
-      | number[] | string[] | boolean[] | Record<string, any>[] | Recordable[];
+  type Params =
+    | number
+    | string
+    | boolean
+    | Record<string, any>
+    | Recordable
+    | number[]
+    | string[]
+    | boolean[]
+    | Record<string, any>[]
+    | Recordable[];
 
   /** FormData 类型 */
   type FormDataParams = Record<any, any> | Recordable;
 
+  /** 响应实体 */
+  interface Result<T extends typeof Entity = Entity> {
+    [key: string]: any;
+    code: number;
+    data: T;
+    msg: string;
+  }
+
   /** 分页 */
   interface PageInfo {
+    [key: string]: any;
     /** 总页数 */
     totalCount: number;
     /** 当前页数 */
@@ -35,14 +52,6 @@ declare global {
 
   /** 实体顶类型 */
   type Entity = BaseEntity | BaseEntityList<BaseEntity>;
-
-  /** 响应实体 */
-  interface Result<T extends typeof Entity = Entity> {
-    code: number;
-    data: T;
-    msg: string;
-  }
-
 }
 
 /**
@@ -51,7 +60,7 @@ declare global {
  * @Author: TuoYingtao
  * @Date: 2023-10-23 10:14:00
  * @Version: v1.0.0
-*/
+ */
 export interface IAxiosRequestConfig<D = FormDataParams> extends AxiosRequestConfig<D> {
   /**
    * 令牌前缀 默认：'Bearer'
@@ -76,9 +85,8 @@ export interface IAxiosRequestConfig<D = FormDataParams> extends AxiosRequestCon
  * @Author: TuoYingtao
  * @Date: 2023-10-23 10:14:06
  * @Version: v1.0.0
-*/
+ */
 export interface AxiosTransform {
-
   /** 请求前处理配置 Hook */
   beforeRequestHook?: (config: RequestConfigWithOptional, options: AxiosOptionsConfig) => RequestConfigWithOptional;
 
@@ -107,7 +115,7 @@ export interface AxiosTransform {
  * @Author: TuoYingtao
  * @Date: 2023-10-23 10:14:13
  * @Version: v1.0.0
-*/
+ */
 export interface AxiosOptionsConfig {
   /** 接口地址 默认：http://localhost:8080 */
   apiUrl?: string;
@@ -150,7 +158,7 @@ export interface AxiosOptionsConfig {
  * @Author: TuoYingtao
  * @Date: 2023-10-23 10:14:58
  * @Version: v1.0.0
-*/
+ */
 export type AxiosResponseResult<E = Result<Entity>> = AxiosResponse<E, RequestConfigWithOptional>;
 
 /**
@@ -159,7 +167,7 @@ export type AxiosResponseResult<E = Result<Entity>> = AxiosResponse<E, RequestCo
  * @Author: TuoYingtao
  * @Date: 2023-10-23 10:15:25
  * @Version: v1.0.0
-*/
+ */
 export type BaseResponseResult<E = Result<Entity>> = AxiosResponse<E, RequestConfigWithOptional> | E;
 
 /**
@@ -168,7 +176,7 @@ export type BaseResponseResult<E = Result<Entity>> = AxiosResponse<E, RequestCon
  * @Author: TuoYingtao
  * @Date: 2023-10-23 10:14:20
  * @Version: v1.0.0
-*/
+ */
 export interface RequestConfigWithOptional<D = FormDataParams> extends AxiosRequestConfig<D> {
   /** 重试次数 */
   retryCount?: number;
@@ -182,7 +190,7 @@ export interface RequestConfigWithOptional<D = FormDataParams> extends AxiosRequ
  * @Author: TuoYingtao
  * @Date: 2023-10-23 10:14:28
  * @Version: v1.0.0
-*/
+ */
 export class AxiosResponseError<T = Result<Entity>, D = FormDataParams> extends AxiosError<T, D> {
   /** 请求配置信息 */
   config?: RequestConfigWithOptional<D>;

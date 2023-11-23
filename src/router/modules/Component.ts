@@ -10,14 +10,14 @@ export default [
     children: [
       {
         path: '/401',
-        component: () => import('@/views/error/401.vue'),
-        hidden: true
+        component: () => import('@/views/common/error/401.vue'),
+        hidden: true,
       },
       {
         path: '/404',
-        component: () => import('@/views/error/404.vue'),
-        hidden: true
+        component: () => import('@/views/common/error/404.vue'),
+        hidden: true,
       },
-    ]
+    ],
   },
-] as LayoutRoutes[]
+] as LayoutRoutes[];
